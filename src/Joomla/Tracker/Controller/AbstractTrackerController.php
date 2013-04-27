@@ -183,7 +183,7 @@ abstract class AbstractTrackerController extends AbstractController
 		// Get some data from the request
 		$vName   = $input->getWord('view', $this->defaultView);
 		$vFormat = $input->getWord('format', 'html');
-		$lName   = $input->getWord('layout', 'default');
+		$lName   = $input->getWord('layout', $this->defaultView.'.index');
 
 		$input->set('view', $vName);
 
