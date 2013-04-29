@@ -8,15 +8,15 @@
 
 namespace Joomla\Tracker\View;
 
-use Joomla\View\AbstractHtmlView;
 use Joomla\Model\ModelInterface;
+use Joomla\View\AbstractView;
 
 /**
- * Joomla Framework HTML View Class
+ * Tracker HTML View Class
  *
  * @since  1.0
  */
-abstract class AbstractTrackerHtmlView extends AbstractHtmlView
+abstract class AbstractTrackerHtmlView extends AbstractView
 {
 	/**
 	 * The view layout.
@@ -29,37 +29,25 @@ abstract class AbstractTrackerHtmlView extends AbstractHtmlView
 	/**
 	 * The view template engine.
 	 *
-	 * @var    string
+	 * @var    \Twiggy
 	 * @since  1.0
 	 */
 	protected $tmplEngine = null;
 
 	/**
-	 * The paths queue.
-	 *
-	 * @var    \SplPriorityQueue
-	 * @since  1.0
-	 */
-	protected $paths;
-
-	/**
 	 * Method to instantiate the view.
 	 *
-	 * @param   ModelInterface     $model  The model object.
-	 * @param   \SplPriorityQueue  $paths  The paths queue.
+	 * @param   ModelInterface  $model  The model object.
 	 *
 	 * @since   1.0
 	 */
-	public function __construct($model, \SplPriorityQueue $paths = null)
+	public function __construct(ModelInterface $model)
 	{
 		parent::__construct($model);
 
 		// Load the template engine.
 		require JPATH_BASE . '/libraries/Twiggy.php';
 		$this->tmplEngine = new \Twiggy;
-
-		// Setup dependencies.
-		$this->paths = isset($paths) ? $paths : $this->loadPaths();
 	}
 
 	/**
@@ -103,18 +91,6 @@ abstract class AbstractTrackerHtmlView extends AbstractHtmlView
 	}
 
 	/**
-	 * Method to get the view paths.
-	 *
-	 * @return  \SplPriorityQueue  The paths queue.
-	 *
-	 * @since   1.0
-	 */
-	public function getPaths()
-	{
-		return $this->paths;
-	}
-
-	/**
 	 * Method to render the view.
 	 *
 	 * @return  string  The rendered view.
@@ -124,26 +100,6 @@ abstract class AbstractTrackerHtmlView extends AbstractHtmlView
 	 */
 	public function render()
 	{
-		// Get the layout path.
-		/*$path = $this->getPath($this->getLayout());
-
-		// Check if the layout path was found.
-		if (!$path)
-		{
-			throw new \RuntimeException('Layout Path Not Found');
-		}
-
-		// Start an output buffer.
-		ob_start();
-
-		// Load the layout.
-		include $path;
-
-		// Get the layout contents.
-		$output = ob_get_clean();
-
-		return $output;*/
-
 		return $this->tmplEngine->template($this->getLayout())->display();
 	}
 
@@ -152,7 +108,7 @@ abstract class AbstractTrackerHtmlView extends AbstractHtmlView
 	 *
 	 * @param   string  $layout  The layout name.
 	 *
-	 * @return  AbstractHtmlView  Method supports chaining.
+	 * @return  AbstractTrackerHtmlView  Method supports chaining.
 	 *
 	 * @since   1.0
 	 */
@@ -161,33 +117,5 @@ abstract class AbstractTrackerHtmlView extends AbstractHtmlView
 		$this->layout = $layout;
 
 		return $this;
-	}
-
-	/**
-	 * Method to set the view paths.
-	 *
-	 * @param   \SplPriorityQueue  $paths  The paths queue.
-	 *
-	 * @return  AbstractHtmlView  Method supports chaining.
-	 *
-	 * @since   1.0
-	 */
-	public function setPaths(\SplPriorityQueue $paths)
-	{
-		$this->paths = $paths;
-
-		return $this;
-	}
-
-	/**
-	 * Method to load the paths queue.
-	 *
-	 * @return  \SplPriorityQueue  The paths queue.
-	 *
-	 * @since   1.0
-	 */
-	protected function loadPaths()
-	{
-		return new \SplPriorityQueue;
 	}
 }

@@ -12,7 +12,7 @@ use Joomla\Application\AbstractApplication;
 use Joomla\Controller\AbstractController;
 use Joomla\Input\Input;
 use Joomla\Log\Log;
-use Joomla\View\AbstractHtmlView;
+use Joomla\Tracker\View\AbstractTrackerHtmlView;
 
 /**
  * Generic Joomla! Issue Tracker Controller class
@@ -219,8 +219,8 @@ abstract class AbstractTrackerController extends AbstractController
 			}
 		}
 
-		/* @var AbstractHtmlView $view */
-		$view = new $vClass(new $mClass, $paths);
+		/* @var AbstractTrackerHtmlView $view */
+		$view = new $vClass(new $mClass);
 		$view->setLayout($lName);
 
 		// Render our view.
