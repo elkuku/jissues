@@ -9,6 +9,7 @@
 namespace Joomla\Tracker\View;
 
 use Joomla\Model\ModelInterface;
+use Joomla\Tracker\View\Renderer\Twigg;
 use Joomla\View\AbstractView;
 
 /**
@@ -46,8 +47,7 @@ abstract class AbstractTrackerHtmlView extends AbstractView
 		parent::__construct($model);
 
 		// Load the template engine.
-		require JPATH_BASE . '/libraries/Twiggy.php';
-		$this->tmplEngine = new \Twiggy;
+		$this->tmplEngine = new Twigg();
 	}
 
 	/**
@@ -100,7 +100,7 @@ abstract class AbstractTrackerHtmlView extends AbstractView
 	 */
 	public function render()
 	{
-		return $this->tmplEngine->template($this->getLayout())->display();
+		return $this->tmplEngine->render($this->getLayout());
 	}
 
 	/**
