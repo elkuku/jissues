@@ -21,7 +21,6 @@ class Twigg extends \Twig_Environment
 	private $_config = array();
 	private $_templateLocations = array();
 	private $_data = array();
-	private $_globals = array();
 	private $_themesBaseDir;
 	private $_theme;
 	private $_template;
@@ -33,6 +32,7 @@ class Twigg extends \Twig_Environment
 	public function __construct()
 	{
 		$config = array();
+		// @todo remove config dependancy
 		require JPATH_CONFIGURATION . '/twiggy.php';
 		$this->_config = $config['twiggy'];
 
@@ -73,7 +73,6 @@ class Twigg extends \Twig_Environment
 			if ($global)
 			{
 				$this->addGlobal($key, $value);
-				$this->_globals[$key] = $value;
 			}
 			else
 			{
