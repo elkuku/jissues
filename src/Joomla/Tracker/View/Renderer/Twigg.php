@@ -19,7 +19,6 @@ if (!class_exists('\Twig_Autoloader'))
 class Twigg extends \Twig_Environment
 {
 	private $_config = array(
-		'include_apppath' => true,
 		'themes_base_dir' => 'templates/',
 		'default_theme' => 'default/',
 		'template_file_ext' => '.tpl',
@@ -41,8 +40,10 @@ class Twigg extends \Twig_Environment
 	 */
 	public function __construct(array $config = array())
 	{
-		// Merge config.
+		// Merge the config.
 		$this->_config = array_replace($this->_config, $config);
+
+		// Set the template location.
 		$this->_setTemplateLocations($this->_config['default_theme']);
 
 		try
