@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Mustache Issues list</title>
+	</head>
+	<body>
+
+	<ul>
+	{{#items}}
+		<li>
+			<a href="https://github.com/{{ project.gh_user }}/{{ project.gh_project }}/issues/{{ item.gh_id }}" target="_blank">{{ item.gh_id }}</a>
+		</li>
+	{{/items}}
+	</ul>
+
+	</body>
+</html>
