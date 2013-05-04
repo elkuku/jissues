@@ -3,32 +3,26 @@
  * @package     JTracker\View
  * @subpackage  Renderer
  *
- * @copyright   Copyright (C) 2012 - 2013 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2013 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 namespace Joomla\Tracker\View\Renderer;
 
-// Check for Composer autoloader
-if (!class_exists('\Twig_Autoloader'))
-{
-	require_once JPATH_BASE . '/vendor/twig/twig/lib/Twig/Autoloader.php';
-}
-\Twig_Autoloader::register();
-
 class Twigg extends \Twig_Environment
 {
 	private $_config = array(
-		'themes_base_dir' => 'templates/',
-		'default_theme' => 'default/',
-		'template_file_ext' => '.tpl',
-		'delimiters' => array(
-				'tag_comment' 	=> array('{#', '#}'),
-				'tag_block'   	=> array('{%', '%}'),
+		'themes_base_dir'	=> 'templates/',
+		'default_theme'		=> 'default/',
+		'template_file_ext'	=> '.tpl',
+		'twig_cache_dir'	=> 'cache/twig/',
+		'delimiters'		=> array(
+				'tag_comment'	=> array('{#', '#}'),
+				'tag_block'		=> array('{%', '%}'),
 				'tag_variable'	=> array('{{', '}}')
 			),
-		'environment' => array()
-		);
+		'environment'		=> array()
+	);
 	private $_data = array();
 	private $_templateLocations = array();
 	private $_theme;
@@ -37,11 +31,13 @@ class Twigg extends \Twig_Environment
 
 	/**
 	 * Constructor
+	 *
+	 * @param  array  $config  The array of configuration parameters
 	 */
-	public function __construct(array $config = array())
+	public function __construct($config = array())
 	{
 		// Merge the config.
-		$this->_config = array_replace($this->_config, $config);
+		$this->_config = array_merge($this->_config, $config);
 
 		// Set the template location.
 		$this->_setTemplateLocations($this->_config['default_theme']);
@@ -133,7 +129,7 @@ class Twigg extends \Twig_Environment
 	{
 		if (!empty($template))
 		{
-			$this->setTemplate($template);
+			$this->_template = $template;
 		}
 
 		if (!empty($data))
@@ -163,7 +159,7 @@ class Twigg extends \Twig_Environment
 	{
 		if (!empty($template))
 		{
-			$this->setTemplate($template);
+			$this->_template = $template;
 		}
 
 		if (!empty($data))

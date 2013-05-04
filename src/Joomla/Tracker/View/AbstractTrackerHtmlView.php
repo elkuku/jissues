@@ -9,6 +9,7 @@
 namespace Joomla\Tracker\View;
 
 use Joomla\Model\ModelInterface;
+use Joomla\Tracker\View\Renderer\Mustache;
 use Joomla\Tracker\View\Renderer\Twigg;
 use Joomla\View\AbstractView;
 
@@ -48,9 +49,16 @@ abstract class AbstractTrackerHtmlView extends AbstractView
 
 		// Load the template engine.
 		$config = array(
-			'themes_base_dir' => JPATH_BASE . '/www/'
+			'themes_base_dir'	=> JPATH_BASE . '/www',
+			'default_theme'		=> '/twigg'
 		);
 		$this->tmplEngine = new Twigg($config);
+
+		/*$config = array(
+			'templates_base_dir'	=> JPATH_BASE . '/www/mustache',
+			'partials_base_dir'	=> JPATH_BASE . '/www/mustache/partials'
+		);
+		$this->tmplEngine = new Mustache($config);*/
 	}
 
 	/**
