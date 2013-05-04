@@ -18,10 +18,20 @@ if (!class_exists('\Twig_Autoloader'))
 
 class Twigg extends \Twig_Environment
 {
-	private $_config = array();
-	private $_templateLocations = array();
+	private $_config = array(
+		'include_apppath' => true,
+		'themes_base_dir' => 'templates/',
+		'default_theme' => 'default/',
+		'template_file_ext' => '.tpl',
+		'delimiters' => array(
+				'tag_comment' 	=> array('{#', '#}'),
+				'tag_block'   	=> array('{%', '%}'),
+				'tag_variable'	=> array('{{', '}}')
+			),
+		'environment' => array()
+		);
 	private $_data = array();
-	private $_themesBaseDir;
+	private $_templateLocations = array();
 	private $_theme;
 	private $_template;
 	private $_twigLoader;
@@ -29,14 +39,10 @@ class Twigg extends \Twig_Environment
 	/**
 	 * Constructor
 	 */
-	public function __construct()
+	public function __construct(array $config = array())
 	{
-		$config = array();
-		// @todo remove config dependancy
-		require JPATH_CONFIGURATION . '/twiggy.php';
-		$this->_config = $config['twiggy'];
-
-		$this->_themesBaseDir = ($this->_config['include_apppath']) ? JPATH_BASE . $this->_config['themes_base_dir'] : $this->_config['themes_base_dir'];
+		// Merge config.
+		$this->_config = array_replace($this->_config, $config);
 		$this->_setTemplateLocations($this->_config['default_theme']);
 
 		try
@@ -213,7 +219,7 @@ class Twigg extends \Twig_Environment
 	 */
 	private function _setTemplateLocations($theme)
 	{
-		$this->_templateLocations[] = $this->_themesBaseDir . $theme;
+		$this->_templateLocations[] = $this->_config['themes_base_dir'] . $theme;
 
 		// Reset the paths if needed.
 		if (is_object($this->_twigLoader))

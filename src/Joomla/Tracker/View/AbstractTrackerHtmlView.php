@@ -47,7 +47,10 @@ abstract class AbstractTrackerHtmlView extends AbstractView
 		parent::__construct($model);
 
 		// Load the template engine.
-		$this->tmplEngine = new Twigg();
+		$config = array(
+			'themes_base_dir' => JPATH_BASE . '/www/'
+		);
+		$this->tmplEngine = new Twigg($config);
 	}
 
 	/**
