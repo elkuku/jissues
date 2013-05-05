@@ -1,6 +1,8 @@
 {% extends "default.tpl" %}
 
 {% block content %}
+
+{{ text._('COM_TRACKER_FILTER_STATUS') }}
 	<ul>
 		{% for item in items %}
 			<li>
