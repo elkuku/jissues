@@ -11,7 +11,7 @@ namespace Joomla\Tracker\View\Renderer;
 
 class Twigg extends \Twig_Environment
 {
-	private $_config = array(
+	private $config = array(
 		'themes_base_dir'	=> 'templates/',
 		'default_theme'		=> 'default/',
 		'template_file_ext'	=> '.tpl',
@@ -23,11 +23,11 @@ class Twigg extends \Twig_Environment
 			),
 		'environment'		=> array()
 	);
-	private $_data = array();
-	private $_templateLocations = array();
-	private $_theme;
-	private $_template;
-	private $_twigLoader;
+	private $data = array();
+	private $templateLocations = array();
+	private $theme;
+	private $template;
+	private $twigLoader;
 
 	/**
 	 * Constructor
@@ -37,23 +37,23 @@ class Twigg extends \Twig_Environment
 	public function __construct($config = array())
 	{
 		// Merge the config.
-		$this->_config = array_merge($this->_config, $config);
+		$this->config = array_merge($this->config, $config);
 
 		// Set the template location.
-		$this->_setTemplateLocations($this->_config['default_theme']);
+		$this->setTemplateLocations($this->config['default_theme']);
 
 		try
 		{
-			$this->_twigLoader = new \Twig_Loader_Filesystem($this->_templateLocations);
+			$this->twigLoader = new \Twig_Loader_Filesystem($this->templateLocations);
 		}
 		catch (\Twig_Error_Loader $e)
 		{
 			echo $e->getRawMessage();
 		}
 
-		parent::__construct($this->_twigLoader, $this->_config['environment']);
+		parent::__construct($this->twigLoader, $this->config['environment']);
 
-		$this->setLexer(new \Twig_Lexer($this, $this->_config['delimiters']));
+		$this->setLexer(new \Twig_Lexer($this, $this->config['delimiters']));
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Twigg extends \Twig_Environment
 			}
 			else
 			{
-				$this->_data[$key] = $value;
+				$this->data[$key] = $value;
 			}
 		}
 
@@ -95,9 +95,9 @@ class Twigg extends \Twig_Environment
 	 */
 	public function unset_data($key)
 	{
-		if (array_key_exists($key, $this->_data))
+		if (array_key_exists($key, $this->data))
 		{
-			unset($this->_data[$key]);
+			unset($this->data[$key]);
 		}
 
 		return $this;
@@ -112,7 +112,7 @@ class Twigg extends \Twig_Environment
 	 */
 	public function setTemplate($name)
 	{
-		$this->_template = $name;
+		$this->template = $name;
 
 		return $this;
 	}
@@ -129,17 +129,17 @@ class Twigg extends \Twig_Environment
 	{
 		if (!empty($template))
 		{
-			$this->_template = $template;
+			$this->template = $template;
 		}
 
 		if (!empty($data))
 		{
-			$this->_data = $data;
+			$this->data = $data;
 		}
 
 		try
 		{
-			return $this->_load()->render($this->_data);
+			return $this->load()->render($this->data);
 		}
 		catch (\Twig_Error_Loader $e)
 		{
@@ -159,17 +159,17 @@ class Twigg extends \Twig_Environment
 	{
 		if (!empty($template))
 		{
-			$this->_template = $template;
+			$this->template = $template;
 		}
 
 		if (!empty($data))
 		{
-			$this->_data = $data;
+			$this->data = $data;
 		}
 
 		try
 		{
-			$this->_load()->display($this->_data);
+			$this->load()->display($this->data);
 		}
 		catch (\Twig_Error_Loader $e)
 		{
@@ -184,7 +184,7 @@ class Twigg extends \Twig_Environment
 	 */
 	public function getTheme()
 	{
-		return $this->_theme;
+		return $this->theme;
 	}
 
 	/**
@@ -194,7 +194,7 @@ class Twigg extends \Twig_Environment
 	 */
 	public function getTemplate()
 	{
-		return $this->_template;
+		return $this->template;
 	}
 
 	/**
@@ -202,9 +202,9 @@ class Twigg extends \Twig_Environment
 	 *
 	 * @return  object  output
 	 */
-	private function _load()
+	private function load()
 	{
-		return $this->loadTemplate($this->_template . $this->_config['template_file_ext']);
+		return $this->loadTemplate($this->template . $this->config['template_file_ext']);
 	}
 
 	/**
@@ -214,14 +214,14 @@ class Twigg extends \Twig_Environment
 	 *
 	 * @return  void
 	 */
-	private function _setTemplateLocations($theme)
+	private function setTemplateLocations($theme)
 	{
-		$this->_templateLocations[] = $this->_config['themes_base_dir'] . $theme;
+		$this->templateLocations[] = $this->config['themes_base_dir'] . $theme;
 
 		// Reset the paths if needed.
-		if (is_object($this->_twigLoader))
+		if (is_object($this->twigLoader))
 		{
-			$this->_twigLoader->setPaths($this->_templateLocations);
+			$this->twigLoader->setPaths($this->templateLocations);
 		}
 	}
 }

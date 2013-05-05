@@ -11,12 +11,12 @@ namespace Joomla\Tracker\View\Renderer;
 
 class Mustache extends \Mustache_Engine
 {
-	private $_config = array(
+	private $config = array(
 		'templates_base_dir'	=> '/templates',
 		'partials_base_dir'		=> '/partials'
 	);
-	private $_data;
-	private $_template;
+	private $data;
+	private $template;
 
 	/**
 	 * Constructor
@@ -26,11 +26,11 @@ class Mustache extends \Mustache_Engine
 	public function __construct($config = array())
 	{
 		// Merge the config.
-		$this->_config = array_merge($this->_config, $config);
+		$this->config = array_merge($this->config, $config);
 
 		parent::__construct(array(
-			'loader'			=> new \Mustache_Loader_FilesystemLoader($this->_config['templates_base_dir']),
-			'partials_loader'	=> new \Mustache_Loader_FilesystemLoader($this->_config['partials_base_dir']),
+			'loader'			=> new \Mustache_Loader_FilesystemLoader($this->config['templates_base_dir']),
+			'partials_loader'	=> new \Mustache_Loader_FilesystemLoader($this->config['partials_base_dir']),
 			)
 		);
 	}
@@ -51,7 +51,7 @@ class Mustache extends \Mustache_Engine
 		}
 		else
 		{
-			$this->_data[$key] = $value;
+			$this->data[$key] = $value;
 		}
 
 		return $this;
@@ -66,9 +66,9 @@ class Mustache extends \Mustache_Engine
 	 */
 	public function unset_data($key)
 	{
-		if (array_key_exists($key, $this->_data))
+		if (array_key_exists($key, $this->data))
 		{
-			unset($this->_data[$key]);
+			unset($this->data[$key]);
 		}
 
 		return $this;
@@ -83,7 +83,7 @@ class Mustache extends \Mustache_Engine
 	 */
 	public function setTemplate($name)
 	{
-		$this->_template = $name;
+		$this->template = $name;
 
 		return $this;
 	}
@@ -100,15 +100,15 @@ class Mustache extends \Mustache_Engine
 	{
 		if (!empty($template))
 		{
-			$this->_template = $template;
+			$this->template = $template;
 		}
 
 		if (!empty($data))
 		{
-			$this->_data = $data;
+			$this->data = $data;
 		}
 
-		return $this->_load()->render($this->_data);
+		return $this->load()->render($this->data);
 	}
 
 	/**
@@ -118,7 +118,7 @@ class Mustache extends \Mustache_Engine
 	 */
 	public function getTemplate()
 	{
-		return $this->_template;
+		return $this->template;
 	}
 
 	/**
@@ -126,8 +126,8 @@ class Mustache extends \Mustache_Engine
 	 *
 	 * @return  object  output
 	 */
-	private function _load()
+	private function load()
 	{
-		return $this->loadTemplate($this->_template);
+		return $this->loadTemplate($this->template);
 	}
 }
