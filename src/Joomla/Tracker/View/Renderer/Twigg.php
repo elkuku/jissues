@@ -12,16 +12,16 @@ namespace Joomla\Tracker\View\Renderer;
 class Twigg extends \Twig_Environment
 {
 	private $config = array(
-		'themes_base_dir'	=> 'templates/',
-		'default_theme'		=> 'default/',
-		'template_file_ext'	=> '.tpl',
-		'twig_cache_dir'	=> 'cache/twig/',
-		'delimiters'		=> array(
-				'tag_comment'	=> array('{#', '#}'),
-				'tag_block'		=> array('{%', '%}'),
-				'tag_variable'	=> array('{{', '}}')
-			),
-		'environment'		=> array()
+		'themes_base_dir'   => 'templates/',
+		'default_theme'     => 'default/',
+		'template_file_ext' => '.tpl',
+		'twig_cache_dir'    => 'cache/twig/',
+		'delimiters'        => array(
+			'tag_comment'  => array('{#', '#}'),
+			'tag_block'    => array('{%', '%}'),
+			'tag_variable' => array('{{', '}}')
+		),
+		'environment'       => array()
 	);
 	private $data = array();
 	private $templateLocations = array();
