@@ -9,8 +9,6 @@
 
 namespace Joomla\Tracker\View\Renderer;
 
-use Joomla\Language\Text;
-
 class Twigg extends \Twig_Environment
 {
 	private $config = array(
@@ -54,9 +52,6 @@ class Twigg extends \Twig_Environment
 		}
 
 		parent::__construct($this->twigLoader, $this->config['environment']);
-
-		// Register globals.
-		$this->registerGlobals();
 
 		// Set lexer.
 		$this->setLexer(new \Twig_Lexer($this, $this->config['delimiters']));
@@ -211,17 +206,6 @@ class Twigg extends \Twig_Environment
 	private function load()
 	{
 		return $this->loadTemplate($this->template . $this->config['template_file_ext']);
-	}
-
-	/**
-	 * Register global variables.
-	 *
-	 * @return  void
-	 */
-	private function registerGlobals()
-	{
-		// Register Text class for translation.
-		$this->addGlobal('text', new Text());
 	}
 
 	/**
