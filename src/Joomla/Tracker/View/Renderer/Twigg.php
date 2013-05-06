@@ -14,7 +14,7 @@ class Twigg extends \Twig_Environment
 	private $config = array(
 		'themes_base_dir'   => 'templates/',
 		'default_theme'     => 'default/',
-		'template_file_ext' => '.tpl',
+		'template_file_ext' => '.twig',
 		'twig_cache_dir'    => 'cache/twig/',
 		'delimiters'        => array(
 			'tag_comment'  => array('{#', '#}'),
