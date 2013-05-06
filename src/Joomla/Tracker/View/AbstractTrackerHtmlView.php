@@ -12,7 +12,7 @@ use Joomla\Language\Text;
 use Joomla\Model\ModelInterface;
 use Joomla\View\AbstractView;
 use Joomla\Tracker\View\Renderer\Mustache;
-use Joomla\Tracker\View\Renderer\Twigg;
+use Joomla\Tracker\View\Renderer\Twig;
 
 /**
  * Tracker HTML View Class
@@ -51,9 +51,9 @@ abstract class AbstractTrackerHtmlView extends AbstractView
 		// Load the template engine.
 		$config = array(
 			'themes_base_dir'	=> JPATH_BASE . '/www',
-			'default_theme'		=> '/twigg'
+			'default_theme'		=> '/twig'
 		);
-		$this->tmplEngine = new Twigg($config);
+		$this->tmplEngine = new Twig($config);
 		$this->tmplEngine->addGlobal('text', new Text());
 
 		/*$config = array(

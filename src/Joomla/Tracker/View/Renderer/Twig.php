@@ -9,7 +9,7 @@
 
 namespace Joomla\Tracker\View\Renderer;
 
-class Twigg extends \Twig_Environment
+class Twig extends \Twig_Environment
 {
 	private $config = array(
 		'themes_base_dir'   => 'templates/',
