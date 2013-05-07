@@ -54,7 +54,12 @@ abstract class AbstractTrackerHtmlView extends AbstractView
 			'default_theme'		=> '/twig'
 		);
 		$this->tmplEngine = new Twig($config);
-		$this->tmplEngine->addGlobal('text', new Text());
+		//$this->tmplEngine->addGlobal('text', new Text());
+		$this->tmplEngine->addFunction(new \Twig_SimpleFunction('translate', function ($string)
+		{
+			return Text::_($string);
+		}
+		));
 
 		/*$config = array(
 			'templates_base_dir'	=> JPATH_BASE . '/www/mustache',
