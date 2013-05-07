@@ -52,9 +52,21 @@ class Twig extends \Twig_Environment
 		}
 
 		parent::__construct($this->twigLoader, $this->config['environment']);
+ 	}
 
-		// Set lexer.
-		$this->setLexer(new \Twig_Lexer($this, $this->config['delimiters']));
+	/**
+	 * Gets the Lexer instance.
+	 *
+	 * @return  \Twig_LexerInterface  A Twig_LexerInterface instance
+	 */
+ 	public function getLexer()
+	{
+		if (null === $this->lexer)
+		{
+			$this->lexer = new \Twig_Lexer($this, $this->config['delimiters']);
+		}
+
+		return $this->lexer;
 	}
 
 	/**
