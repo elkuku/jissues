@@ -50,7 +50,7 @@ abstract class AbstractTrackerHtmlView extends AbstractView
 
 		// Load the template engine.
 		$config = array(
-			'themes_base_dir'	=> JPATH_BASE . '/www',
+			'themes_base_dir'	=> JPATH_THEMES,
 			'default_theme'		=> '/twig'
 		);
 		$this->tmplEngine = new Twig($config);
