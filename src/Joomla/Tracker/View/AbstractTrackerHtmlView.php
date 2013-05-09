@@ -63,7 +63,7 @@ abstract class AbstractTrackerHtmlView extends AbstractView
 
 		/*$config = array(
 			'templates_base_dir'	=> JPATH_BASE . '/www/mustache',
-			'partials_base_dir'	=> JPATH_BASE . '/www/mustache/partials'
+			'partials_base_dir'		=> JPATH_BASE . '/www/mustache/partials'
 		);
 		$this->tmplEngine = new Mustache($config);*/
 	}
