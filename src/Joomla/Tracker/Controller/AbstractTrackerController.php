@@ -177,7 +177,7 @@ abstract class AbstractTrackerController extends AbstractController
 	public function execute()
 	{
 		// Get the application
-		$app   = $this->getApplication();
+		//$app   = $this->getApplication();
 		$input = $this->getInput();
 
 		// Get some data from the request
@@ -187,9 +187,10 @@ abstract class AbstractTrackerController extends AbstractController
 
 		$input->set('view', $vName);
 
-		// Register the layout paths for the view
-		$paths = new \SplPriorityQueue;
-		$paths->insert(JPATH_COMPONENT . '/View/' . ucfirst($vName) . '/tmpl', 'normal');
+		// Register the layout path for the view
+		//$paths = new \SplPriorityQueue;
+		//$paths->insert(JPATH_COMPONENT . '/View/' . ucfirst($vName) . '/tmpl', 'normal');
+		$componentPath = JPATH_COMPONENT . '/View/' . ucfirst($vName) . '/tmpl';;
 
 		$base   = '\\Joomla\\Tracker\\Components\\' . $this->component;
 		$vClass = $base . '\\View\\' . ucfirst($vName) . '\\' . ucfirst($vName) . ucfirst($vFormat) . 'View';
@@ -220,7 +221,7 @@ abstract class AbstractTrackerController extends AbstractController
 		}
 
 		/* @var AbstractTrackerHtmlView $view */
-		$view = new $vClass(new $mClass);
+		$view = new $vClass(new $mClass, $componentPath);
 		$view->setLayout($lName);
 
 		// Render our view.

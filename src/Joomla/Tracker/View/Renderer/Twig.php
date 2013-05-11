@@ -237,4 +237,18 @@ class Twig extends \Twig_Environment
 			$this->twigLoader->setPaths($this->templateLocations);
 		}
 	}
+
+	/**
+	 * Adds a path where templates are stored.
+	 *
+	 * @param   string  $path  A path where to look for templates.
+	 *
+	 * @return $this
+	 */
+	public function addPath($path)
+	{
+		$this->twigLoader->addPath($path);
+
+		return $this;
+	}
 }

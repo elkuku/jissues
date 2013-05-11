@@ -32,7 +32,7 @@ abstract class AbstractTrackerHtmlView extends AbstractView
 	/**
 	 * The view template engine.
 	 *
-	 * @var    \Twiggy
+	 * @var    Twig
 	 * @since  1.0
 	 */
 	protected $tmplEngine = null;
@@ -40,11 +40,12 @@ abstract class AbstractTrackerHtmlView extends AbstractView
 	/**
 	 * Method to instantiate the view.
 	 *
-	 * @param   ModelInterface  $model  The model object.
+	 * @param   ModelInterface  $model          The model object.
+	 * @param   string          $componentPath  The component layout path.
 	 *
 	 * @since   1.0
 	 */
-	public function __construct(ModelInterface $model)
+	public function __construct(ModelInterface $model, $componentPath)
 	{
 		parent::__construct($model);
 
@@ -60,6 +61,8 @@ abstract class AbstractTrackerHtmlView extends AbstractView
 			return Text::_($string);
 		}
 		));
+
+		$this->tmplEngine->addPath($componentPath);
 
 		/*$config = array(
 			'templates_base_dir'	=> JPATH_BASE . '/www/mustache',
