@@ -401,6 +401,12 @@ class AbstractDatabaseTable implements \IteratorAggregate
 	 */
 	public function store($updateNulls = false)
 	{
+		if (0 == $this->{$this->getKeyName()})
+		{
+			// Fix for db engines that consider 0 a valid integer =;)
+			$this->{$this->getKeyName()} = null;
+		}
+
 		// If a primary key exists update the object, otherwise insert it.
 		if ($this->hasPrimaryKey())
 		{
