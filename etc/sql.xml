@@ -1,0 +1,1288 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <database>
+  <table_structure name="#__accessgroups">
+   <field Field="group_id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
+   <field Field="project_id" Type="int(11)" Null="NO" Key="MUL" Extra="" Comment="" />
+   <field Field="title" Type="varchar(150)" Null="NO" Key="" Extra="" Comment="" />
+   <field Field="can_view" Type="int(11)" Null="NO" Key="" Extra="" Comment="" />
+   <field Field="can_create" Type="int(11)" Null="NO" Key="" Extra="" Comment="" />
+   <field Field="can_manage" Type="int(11)" Null="NO" Key="" Extra="" Comment="" />
+   <field Field="can_edit" Type="int(11)" Null="NO" Key="" Extra="" Comment="" />
+   <field Field="system" Type="int(11)" Null="NO" Key="" Extra="" Comment="" />
+   <key Table="#__accessgroups" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="group_id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__accessgroups" Non_unique="1" Key_name="project_id" Seq_in_index="1" Column_name="project_id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+  </table_structure>
+  <table_data name="#__accessgroups">
+   <row>
+    <field name="group_id">1</field>
+    <field name="project_id">1</field>
+    <field name="title">Public</field>
+    <field name="can_view">1</field>
+    <field name="can_create">0</field>
+    <field name="can_manage">0</field>
+    <field name="can_edit">0</field>
+    <field name="system">1</field>
+   </row>
+   <row>
+    <field name="group_id">2</field>
+    <field name="project_id">1</field>
+    <field name="title">User</field>
+    <field name="can_view">1</field>
+    <field name="can_create">1</field>
+    <field name="can_manage">0</field>
+    <field name="can_edit">0</field>
+    <field name="system">1</field>
+   </row>
+   <row>
+    <field name="group_id">3</field>
+    <field name="project_id">2</field>
+    <field name="title">Public</field>
+    <field name="can_view">1</field>
+    <field name="can_create">0</field>
+    <field name="can_manage">0</field>
+    <field name="can_edit">0</field>
+    <field name="system">1</field>
+   </row>
+   <row>
+    <field name="group_id">4</field>
+    <field name="project_id">2</field>
+    <field name="title">User</field>
+    <field name="can_view">1</field>
+    <field name="can_create">1</field>
+    <field name="can_manage">0</field>
+    <field name="can_edit">0</field>
+    <field name="system">1</field>
+   </row>
+   <row>
+    <field name="group_id">5</field>
+    <field name="project_id">3</field>
+    <field name="title">Public</field>
+    <field name="can_view">0</field>
+    <field name="can_create">0</field>
+    <field name="can_manage">0</field>
+    <field name="can_edit">0</field>
+    <field name="system">1</field>
+   </row>
+   <row>
+    <field name="group_id">6</field>
+    <field name="project_id">3</field>
+    <field name="title">User</field>
+    <field name="can_view">0</field>
+    <field name="can_create">0</field>
+    <field name="can_manage">0</field>
+    <field name="can_edit">0</field>
+    <field name="system">1</field>
+   </row>
+   <row>
+    <field name="group_id">7</field>
+    <field name="project_id">3</field>
+    <field name="title">JSST</field>
+    <field name="can_view">1</field>
+    <field name="can_create">1</field>
+    <field name="can_manage">0</field>
+    <field name="can_edit">1</field>
+    <field name="system">0</field>
+   </row>
+   <row>
+    <field name="group_id">8</field>
+    <field name="project_id">3</field>
+    <field name="title">JBS Managers</field>
+    <field name="can_view">1</field>
+    <field name="can_create">1</field>
+    <field name="can_manage">1</field>
+    <field name="can_edit">1</field>
+    <field name="system">0</field>
+   </row>
+  </table_data>
+  <table_structure name="#__activities">
+   <field Field="activities_id" Type="int(10) unsigned" Null="NO" Key="PRI" Extra="auto_increment" Comment="PK" />
+   <field Field="gh_comment_id" Type="int(10) unsigned" Null="YES" Key="" Extra="" Comment="The GitHub comment id" />
+   <field Field="issue_number" Type="int(10) unsigned" Null="NO" Key="MUL" Extra="" Comment="THE issue number (ID)" />
+   <field Field="project_id" Type="int(10) unsigned" Null="NO" Key="" Extra="" Comment="The Project id" />
+   <field Field="user" Type="varchar(255)" Null="NO" Key="" Default="" Extra="" Comment="The user name" />
+   <field Field="event" Type="varchar(32)" Null="NO" Key="" Extra="" Comment="The event type" />
+   <field Field="text" Type="mediumtext" Null="YES" Key="" Extra="" Comment="The event text" />
+   <field Field="text_raw" Type="mediumtext" Null="YES" Key="" Extra="" Comment="The raw event text" />
+   <field Field="created_date" Type="datetime" Null="NO" Key="" Default="0000-00-00 00:00:00" Extra="" Comment="" />
+   <key Table="#__activities" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="activities_id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__activities" Non_unique="1" Key_name="issue_number" Seq_in_index="1" Column_name="issue_number" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+  </table_structure>
+  <table_data name="#__activities">
+  </table_data>
+  <table_structure name="#__categories">
+   <field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
+   <field Field="parent_id" Type="int(10) unsigned" Null="NO" Key="" Default="0" Extra="" Comment="" />
+   <field Field="lft" Type="int(11)" Null="NO" Key="MUL" Default="0" Extra="" Comment="" />
+   <field Field="rgt" Type="int(11)" Null="NO" Key="" Default="0" Extra="" Comment="" />
+   <field Field="level" Type="int(10) unsigned" Null="NO" Key="" Default="0" Extra="" Comment="" />
+   <field Field="path" Type="varchar(255)" Null="NO" Key="MUL" Default="" Extra="" Comment="" />
+   <field Field="extension" Type="varchar(50)" Null="NO" Key="MUL" Default="" Extra="" Comment="" />
+   <field Field="title" Type="varchar(255)" Null="NO" Key="" Extra="" Comment="" />
+   <field Field="alias" Type="varchar(255)" Null="NO" Key="MUL" Default="" Extra="" Comment="" />
+   <field Field="description" Type="mediumtext" Null="NO" Key="" Extra="" Comment="" />
+   <field Field="published" Type="tinyint(1)" Null="NO" Key="" Default="0" Extra="" Comment="" />
+   <field Field="checked_out" Type="int(11) unsigned" Null="NO" Key="MUL" Default="0" Extra="" Comment="" />
+   <field Field="checked_out_time" Type="datetime" Null="NO" Key="" Default="0000-00-00 00:00:00" Extra="" Comment="" />
+   <field Field="access" Type="int(10) unsigned" Null="NO" Key="MUL" Default="0" Extra="" Comment="" />
+   <field Field="created_user_id" Type="int(10) unsigned" Null="NO" Key="" Default="0" Extra="" Comment="" />
+   <field Field="created_time" Type="datetime" Null="NO" Key="" Default="0000-00-00 00:00:00" Extra="" Comment="" />
+   <field Field="modified_user_id" Type="int(10) unsigned" Null="NO" Key="" Default="0" Extra="" Comment="" />
+   <field Field="modified_time" Type="datetime" Null="NO" Key="" Default="0000-00-00 00:00:00" Extra="" Comment="" />
+   <field Field="version" Type="int(10) unsigned" Null="NO" Key="" Default="1" Extra="" Comment="" />
+   <key Table="#__categories" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__categories" Non_unique="1" Key_name="cat_idx" Seq_in_index="1" Column_name="extension" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__categories" Non_unique="1" Key_name="cat_idx" Seq_in_index="2" Column_name="published" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__categories" Non_unique="1" Key_name="cat_idx" Seq_in_index="3" Column_name="access" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__categories" Non_unique="1" Key_name="idx_access" Seq_in_index="1" Column_name="access" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__categories" Non_unique="1" Key_name="idx_checkout" Seq_in_index="1" Column_name="checked_out" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__categories" Non_unique="1" Key_name="idx_path" Seq_in_index="1" Column_name="path" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__categories" Non_unique="1" Key_name="idx_left_right" Seq_in_index="1" Column_name="lft" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__categories" Non_unique="1" Key_name="idx_left_right" Seq_in_index="2" Column_name="rgt" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__categories" Non_unique="1" Key_name="idx_alias" Seq_in_index="1" Column_name="alias" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+  </table_structure>
+  <table_data name="#__categories">
+   <row>
+    <field name="id">1</field>
+    <field name="parent_id">0</field>
+    <field name="lft">0</field>
+    <field name="rgt">82</field>
+    <field name="level">0</field>
+    <field name="path"></field>
+    <field name="extension">system</field>
+    <field name="title">ROOT</field>
+    <field name="alias">root</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">42</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">2</field>
+    <field name="parent_id">1</field>
+    <field name="lft">0</field>
+    <field name="rgt">1</field>
+    <field name="level">1</field>
+    <field name="path">joomla-cms-issue-tracker</field>
+    <field name="extension">com_tracker</field>
+    <field name="title">Joomla! CMS Issue Tracker</field>
+    <field name="alias">joomla-cms-issue-tracker</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">6</field>
+    <field name="parent_id">1</field>
+    <field name="lft">8</field>
+    <field name="rgt">9</field>
+    <field name="level">1</field>
+    <field name="path">php-version</field>
+    <field name="extension">com_tracker.fields</field>
+    <field name="title">PHP Version</field>
+    <field name="alias">php-version</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">7</field>
+    <field name="parent_id">1</field>
+    <field name="lft">10</field>
+    <field name="rgt">11</field>
+    <field name="level">1</field>
+    <field name="path">browser</field>
+    <field name="extension">com_tracker.fields</field>
+    <field name="title">Browser</field>
+    <field name="alias">browser</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">8</field>
+    <field name="parent_id">1</field>
+    <field name="lft">12</field>
+    <field name="rgt">13</field>
+    <field name="level">1</field>
+    <field name="path">web-server</field>
+    <field name="extension">com_tracker.fields</field>
+    <field name="title">Web Server</field>
+    <field name="alias">web-server</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">9</field>
+    <field name="parent_id">1</field>
+    <field name="lft">14</field>
+    <field name="rgt">15</field>
+    <field name="level">1</field>
+    <field name="path">database</field>
+    <field name="extension">com_tracker.fields</field>
+    <field name="title">Database</field>
+    <field name="alias">database</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">10</field>
+    <field name="parent_id">1</field>
+    <field name="lft">16</field>
+    <field name="rgt">17</field>
+    <field name="level">1</field>
+    <field name="path">5-2-x</field>
+    <field name="extension">com_tracker.fields.6</field>
+    <field name="title">5.2.x</field>
+    <field name="alias">5-2-x</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">11</field>
+    <field name="parent_id">1</field>
+    <field name="lft">18</field>
+    <field name="rgt">19</field>
+    <field name="level">1</field>
+    <field name="path">5-3-x</field>
+    <field name="extension">com_tracker.fields.6</field>
+    <field name="title">5.3.x</field>
+    <field name="alias">5-3-x</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">12</field>
+    <field name="parent_id">1</field>
+    <field name="lft">20</field>
+    <field name="rgt">21</field>
+    <field name="level">1</field>
+    <field name="path">5-4-x</field>
+    <field name="extension">com_tracker.fields.6</field>
+    <field name="title">5.4.x</field>
+    <field name="alias">5-4-x</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">13</field>
+    <field name="parent_id">1</field>
+    <field name="lft">22</field>
+    <field name="rgt">29</field>
+    <field name="level">1</field>
+    <field name="path">internet-explorer</field>
+    <field name="extension">com_tracker.fields.7</field>
+    <field name="title">Internet Explorer</field>
+    <field name="alias">internet-explorer</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">14</field>
+    <field name="parent_id">1</field>
+    <field name="lft">30</field>
+    <field name="rgt">37</field>
+    <field name="level">1</field>
+    <field name="path">mozilla-firefox</field>
+    <field name="extension">com_tracker.fields.7</field>
+    <field name="title">Mozilla Firefox</field>
+    <field name="alias">mozilla-firefox</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">15</field>
+    <field name="parent_id">1</field>
+    <field name="lft">38</field>
+    <field name="rgt">43</field>
+    <field name="level">1</field>
+    <field name="path">google-chrome</field>
+    <field name="extension">com_tracker.fields.7</field>
+    <field name="title">Google Chrome</field>
+    <field name="alias">google-chrome</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">16</field>
+    <field name="parent_id">1</field>
+    <field name="lft">44</field>
+    <field name="rgt">45</field>
+    <field name="level">1</field>
+    <field name="path">safari</field>
+    <field name="extension">com_tracker.fields.7</field>
+    <field name="title">Safari</field>
+    <field name="alias">safari</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">17</field>
+    <field name="parent_id">13</field>
+    <field name="lft">23</field>
+    <field name="rgt">24</field>
+    <field name="level">2</field>
+    <field name="path">internet-explorer/internet-explorer-7</field>
+    <field name="extension">com_tracker.fields.7</field>
+    <field name="title">Internet Explorer 7</field>
+    <field name="alias">internet-explorer-7</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">18</field>
+    <field name="parent_id">13</field>
+    <field name="lft">25</field>
+    <field name="rgt">26</field>
+    <field name="level">2</field>
+    <field name="path">internet-explorer/internet-explorer-8</field>
+    <field name="extension">com_tracker.fields.7</field>
+    <field name="title">Internet Explorer 8</field>
+    <field name="alias">internet-explorer-8</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">19</field>
+    <field name="parent_id">13</field>
+    <field name="lft">27</field>
+    <field name="rgt">28</field>
+    <field name="level">2</field>
+    <field name="path">internet-explorer/internet-explorer-9</field>
+    <field name="extension">com_tracker.fields.7</field>
+    <field name="title">Internet Explorer 9</field>
+    <field name="alias">internet-explorer-9</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">20</field>
+    <field name="parent_id">14</field>
+    <field name="lft">31</field>
+    <field name="rgt">32</field>
+    <field name="level">2</field>
+    <field name="path">mozilla-firefox/firefox-14</field>
+    <field name="extension">com_tracker.fields.7</field>
+    <field name="title">Firefox 14</field>
+    <field name="alias">firefox-14</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">21</field>
+    <field name="parent_id">14</field>
+    <field name="lft">33</field>
+    <field name="rgt">34</field>
+    <field name="level">2</field>
+    <field name="path">mozilla-firefox/firefox-15</field>
+    <field name="extension">com_tracker.fields.7</field>
+    <field name="title">Firefox 15</field>
+    <field name="alias">firefox-15</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">22</field>
+    <field name="parent_id">14</field>
+    <field name="lft">35</field>
+    <field name="rgt">36</field>
+    <field name="level">2</field>
+    <field name="path">mozilla-firefox/firefox-16</field>
+    <field name="extension">com_tracker.fields.7</field>
+    <field name="title">Firefox 16</field>
+    <field name="alias">firefox-16</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">23</field>
+    <field name="parent_id">15</field>
+    <field name="lft">39</field>
+    <field name="rgt">40</field>
+    <field name="level">2</field>
+    <field name="path">google-chrome/chrome-desktop</field>
+    <field name="extension">com_tracker.fields.7</field>
+    <field name="title">Chrome (Desktop)</field>
+    <field name="alias">chrome-desktop</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">24</field>
+    <field name="parent_id">15</field>
+    <field name="lft">41</field>
+    <field name="rgt">42</field>
+    <field name="level">2</field>
+    <field name="path">google-chrome/chrome-mobile</field>
+    <field name="extension">com_tracker.fields.7</field>
+    <field name="title">Chrome (Mobile)</field>
+    <field name="alias">chrome-mobile</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">25</field>
+    <field name="parent_id">1</field>
+    <field name="lft">46</field>
+    <field name="rgt">51</field>
+    <field name="level">1</field>
+    <field name="path">apache</field>
+    <field name="extension">com_tracker.fields.8</field>
+    <field name="title">Apache</field>
+    <field name="alias">apache</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">26</field>
+    <field name="parent_id">1</field>
+    <field name="lft">52</field>
+    <field name="rgt">55</field>
+    <field name="level">1</field>
+    <field name="path">iis</field>
+    <field name="extension">com_tracker.fields.8</field>
+    <field name="title">IIS</field>
+    <field name="alias">iis</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">27</field>
+    <field name="parent_id">25</field>
+    <field name="lft">47</field>
+    <field name="rgt">48</field>
+    <field name="level">2</field>
+    <field name="path">apache/apache-2-2-x</field>
+    <field name="extension">com_tracker.fields.8</field>
+    <field name="title">Apache 2.2.x</field>
+    <field name="alias">apache-2-2-x</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">28</field>
+    <field name="parent_id">25</field>
+    <field name="lft">49</field>
+    <field name="rgt">50</field>
+    <field name="level">2</field>
+    <field name="path">apache/apache-2-4-x</field>
+    <field name="extension">com_tracker.fields.8</field>
+    <field name="title">Apache 2.4.x</field>
+    <field name="alias">apache-2-4-x</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">29</field>
+    <field name="parent_id">26</field>
+    <field name="lft">53</field>
+    <field name="rgt">54</field>
+    <field name="level">2</field>
+    <field name="path">iis/iis-7</field>
+    <field name="extension">com_tracker.fields.8</field>
+    <field name="title">IIS 7</field>
+    <field name="alias">iis-7</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">30</field>
+    <field name="parent_id">1</field>
+    <field name="lft">56</field>
+    <field name="rgt">63</field>
+    <field name="level">1</field>
+    <field name="path">mysql</field>
+    <field name="extension">com_tracker.fields.9</field>
+    <field name="title">MySQL</field>
+    <field name="alias">mysql</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">31</field>
+    <field name="parent_id">1</field>
+    <field name="lft">64</field>
+    <field name="rgt">67</field>
+    <field name="level">1</field>
+    <field name="path">microsoft-sql-server</field>
+    <field name="extension">com_tracker.fields.9</field>
+    <field name="title">Microsoft SQL Server</field>
+    <field name="alias">microsoft-sql-server</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">32</field>
+    <field name="parent_id">1</field>
+    <field name="lft">68</field>
+    <field name="rgt">77</field>
+    <field name="level">1</field>
+    <field name="path">postgresql</field>
+    <field name="extension">com_tracker.fields.9</field>
+    <field name="title">PostgreSQL</field>
+    <field name="alias">postgresql</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">33</field>
+    <field name="parent_id">30</field>
+    <field name="lft">57</field>
+    <field name="rgt">58</field>
+    <field name="level">2</field>
+    <field name="path">mysql/mysql-5-0-x</field>
+    <field name="extension">com_tracker.fields.9</field>
+    <field name="title">MySQL 5.0.x</field>
+    <field name="alias">mysql-5-0-x</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">34</field>
+    <field name="parent_id">30</field>
+    <field name="lft">59</field>
+    <field name="rgt">60</field>
+    <field name="level">2</field>
+    <field name="path">mysql/mysql-5-1-x</field>
+    <field name="extension">com_tracker.fields.9</field>
+    <field name="title">MySQL 5.1.x</field>
+    <field name="alias">mysql-5-1-x</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">35</field>
+    <field name="parent_id">30</field>
+    <field name="lft">61</field>
+    <field name="rgt">62</field>
+    <field name="level">2</field>
+    <field name="path">mysql/mysql-5-5-x</field>
+    <field name="extension">com_tracker.fields.9</field>
+    <field name="title">MySQL 5.5.x</field>
+    <field name="alias">mysql-5-5-x</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">36</field>
+    <field name="parent_id">31</field>
+    <field name="lft">65</field>
+    <field name="rgt">66</field>
+    <field name="level">2</field>
+    <field name="path">microsoft-sql-server/sql-server-2008-r2-10-50-1600-1</field>
+    <field name="extension">com_tracker.fields.9</field>
+    <field name="title">SQL Server 2008 R2 (10.50.1600.1)</field>
+    <field name="alias">sql-server-2008-r2-10-50-1600-1</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">37</field>
+    <field name="parent_id">32</field>
+    <field name="lft">69</field>
+    <field name="rgt">70</field>
+    <field name="level">2</field>
+    <field name="path">postgresql/postgresql-8-3-x</field>
+    <field name="extension">com_tracker.fields.9</field>
+    <field name="title">PostgreSQL 8.3.x</field>
+    <field name="alias">postgresql-8-3-x</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">38</field>
+    <field name="parent_id">32</field>
+    <field name="lft">71</field>
+    <field name="rgt">72</field>
+    <field name="level">2</field>
+    <field name="path">postgresql/postgresql-8-4-x</field>
+    <field name="extension">com_tracker.fields.9</field>
+    <field name="title">PostgreSQL 8.4.x</field>
+    <field name="alias">postgresql-8-4-x</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">39</field>
+    <field name="parent_id">32</field>
+    <field name="lft">73</field>
+    <field name="rgt">74</field>
+    <field name="level">2</field>
+    <field name="path">postgresql/postgresql-9-0-x</field>
+    <field name="extension">com_tracker.fields.9</field>
+    <field name="title">PostgreSQL 9.0.x</field>
+    <field name="alias">postgresql-9-0-x</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">40</field>
+    <field name="parent_id">32</field>
+    <field name="lft">75</field>
+    <field name="rgt">76</field>
+    <field name="level">2</field>
+    <field name="path">postgresql/postgresql-9-1-x</field>
+    <field name="extension">com_tracker.fields.9</field>
+    <field name="title">PostgreSQL 9.1.x</field>
+    <field name="alias">postgresql-9-1-x</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-20 12:00:00</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">41</field>
+    <field name="parent_id">1</field>
+    <field name="lft">78</field>
+    <field name="rgt">79</field>
+    <field name="level">1</field>
+    <field name="path">build</field>
+    <field name="extension">com_tracker.textfields</field>
+    <field name="title">Build</field>
+    <field name="alias">build</field>
+    <field name="description">The build number where the issue occurs.</field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">4</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-21 21:19:08</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">42</field>
+    <field name="parent_id">1</field>
+    <field name="lft">80</field>
+    <field name="rgt">81</field>
+    <field name="level">1</field>
+    <field name="path">easy</field>
+    <field name="extension">com_tracker.checkboxes</field>
+    <field name="title">Easy</field>
+    <field name="alias">easy</field>
+    <field name="description">Is this an &quot;easy&quot; issue ?</field>
+    <field name="published">1</field>
+    <field name="checked_out">1</field>
+    <field name="checked_out_time">2012-10-21 21:21:04</field>
+    <field name="access">4</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2012-10-21 21:20:28</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">43</field>
+    <field name="parent_id">1</field>
+    <field name="lft">83</field>
+    <field name="rgt">84</field>
+    <field name="level">1</field>
+    <field name="path">category</field>
+    <field name="extension">com_tracker.fields</field>
+    <field name="title">Category</field>
+    <field name="alias">category</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2013-01-07 23:17:33</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">44</field>
+    <field name="parent_id">1</field>
+    <field name="lft">85</field>
+    <field name="rgt">86</field>
+    <field name="level">1</field>
+    <field name="path">languages</field>
+    <field name="extension">com_tracker.fields.43</field>
+    <field name="title">Languages</field>
+    <field name="alias">languages</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2013-01-07 23:18:04</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">45</field>
+    <field name="parent_id">1</field>
+    <field name="lft">87</field>
+    <field name="rgt">88</field>
+    <field name="level">1</field>
+    <field name="path">components</field>
+    <field name="extension">com_tracker.fields.43</field>
+    <field name="title">Components</field>
+    <field name="alias">components</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2013-01-07 23:18:44</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+   <row>
+    <field name="id">46</field>
+    <field name="parent_id">1</field>
+    <field name="lft">89</field>
+    <field name="rgt">90</field>
+    <field name="level">1</field>
+    <field name="path">templates</field>
+    <field name="extension">com_tracker.fields.43</field>
+    <field name="title">Templates</field>
+    <field name="alias">templates</field>
+    <field name="description"></field>
+    <field name="published">1</field>
+    <field name="checked_out">0</field>
+    <field name="checked_out_time">0000-00-00 00:00:00</field>
+    <field name="access">1</field>
+    <field name="created_user_id">1</field>
+    <field name="created_time">2013-01-07 23:18:51</field>
+    <field name="modified_user_id">0</field>
+    <field name="modified_time">0000-00-00 00:00:00</field>
+    <field name="version">1</field>
+   </row>
+  </table_data>
+  <table_structure name="#__issues">
+   <field Field="id" Type="int(10) unsigned" Null="NO" Key="PRI" Extra="auto_increment" Comment="PK" />
+   <field Field="issue_number" Type="int(10) unsigned" Null="YES" Key="MUL" Extra="" Comment="THE issue number (ID)" />
+   <field Field="foreign_number" Type="int(10) unsigned" Null="YES" Key="" Extra="" Comment="Foreign tracker id" />
+   <field Field="project_id" Type="int(10) unsigned" Null="YES" Key="MUL" Extra="" Comment="Project id" />
+   <field Field="title" Type="varchar(255)" Null="NO" Key="" Default="" Extra="" Comment="Issue title" />
+   <field Field="description" Type="mediumtext" Null="NO" Key="" Extra="" Comment="Issue description" />
+   <field Field="description_raw" Type="mediumtext" Null="NO" Key="" Extra="" Comment="The raw issue description (markdown)" />
+   <field Field="priority" Type="tinyint(4)" Null="NO" Key="" Default="3" Extra="" Comment="Issue priority" />
+   <field Field="status" Type="int(10) unsigned" Null="NO" Key="MUL" Default="1" Extra="" Comment="Issue status" />
+   <field Field="opened_date" Type="datetime" Null="NO" Key="" Default="0000-00-00 00:00:00" Extra="" Comment="Issue open date" />
+   <field Field="opened_by" Type="varchar(50)" Null="YES" Key="" Extra="" Comment="Opened by username" />
+   <field Field="closed_date" Type="datetime" Null="NO" Key="" Default="0000-00-00 00:00:00" Extra="" Comment="Issue closed date" />
+   <field Field="closed_by" Type="varchar(50)" Null="YES" Key="" Extra="" Comment="Issue closed by username" />
+   <field Field="closed_sha" Type="varchar(40)" Null="YES" Key="" Extra="" Comment="The GitHub SHA where the issue has been closed" />
+   <field Field="modified_date" Type="datetime" Null="NO" Key="" Default="0000-00-00 00:00:00" Extra="" Comment="Issue modified date" />
+   <field Field="modified_by" Type="varchar(50)" Null="YES" Key="" Extra="" Comment="Issue modified by username" />
+   <field Field="rel_id" Type="int(10) unsigned" Null="YES" Key="" Extra="" Comment="Relation id user" />
+   <field Field="rel_type" Type="varchar(150)" Null="YES" Key="" Extra="" Comment="Relation type" />
+   <field Field="has_code" Type="tinyint(1)" Null="NO" Key="" Default="0" Extra="" Comment="If the issue has code attached - aka a pull request" />
+   <key Table="#__issues" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__issues" Non_unique="1" Key_name="status" Seq_in_index="1" Column_name="status" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__issues" Non_unique="1" Key_name="issue_number" Seq_in_index="1" Column_name="issue_number" Collation="A" Null="YES" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__issues" Non_unique="1" Key_name="project_id" Seq_in_index="1" Column_name="project_id" Collation="A" Null="YES" Index_type="BTREE" Comment="" Index_comment="" />
+  </table_structure>
+  <table_data name="#__issues">
+  </table_data>
+  <table_structure name="#__issues_relations_types">
+   <field Field="id" Type="int(10) unsigned" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
+   <field Field="name" Type="varchar(150)" Null="NO" Key="" Extra="" Comment="" />
+   <key Table="#__issues_relations_types" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+  </table_structure>
+  <table_data name="#__issues_relations_types">
+   <row>
+    <field name="id">1</field>
+    <field name="name">duplicate_of</field>
+   </row>
+   <row>
+    <field name="id">2</field>
+    <field name="name">related_to</field>
+   </row>
+   <row>
+    <field name="id">3</field>
+    <field name="name">not_before</field>
+   </row>
+  </table_data>
+  <table_structure name="#__languages">
+   <field Field="lang_id" Type="int(11) unsigned" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
+   <field Field="lang_code" Type="char(7)" Null="NO" Key="UNI" Extra="" Comment="" />
+   <field Field="title" Type="varchar(50)" Null="NO" Key="" Extra="" Comment="" />
+   <field Field="title_native" Type="varchar(50)" Null="NO" Key="" Extra="" Comment="" />
+   <field Field="sef" Type="varchar(50)" Null="NO" Key="UNI" Extra="" Comment="" />
+   <field Field="image" Type="varchar(50)" Null="NO" Key="UNI" Extra="" Comment="" />
+   <field Field="description" Type="varchar(512)" Null="NO" Key="" Extra="" Comment="" />
+   <field Field="metakey" Type="text" Null="NO" Key="" Extra="" Comment="" />
+   <field Field="metadesc" Type="text" Null="NO" Key="" Extra="" Comment="" />
+   <field Field="sitename" Type="varchar(1024)" Null="NO" Key="" Default="" Extra="" Comment="" />
+   <field Field="published" Type="int(11)" Null="NO" Key="" Default="0" Extra="" Comment="" />
+   <field Field="access" Type="int(10) unsigned" Null="NO" Key="MUL" Default="0" Extra="" Comment="" />
+   <field Field="ordering" Type="int(11)" Null="NO" Key="MUL" Default="0" Extra="" Comment="" />
+   <key Table="#__languages" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="lang_id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__languages" Non_unique="0" Key_name="idx_sef" Seq_in_index="1" Column_name="sef" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__languages" Non_unique="0" Key_name="idx_image" Seq_in_index="1" Column_name="image" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__languages" Non_unique="0" Key_name="idx_langcode" Seq_in_index="1" Column_name="lang_code" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__languages" Non_unique="1" Key_name="idx_access" Seq_in_index="1" Column_name="access" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__languages" Non_unique="1" Key_name="idx_ordering" Seq_in_index="1" Column_name="ordering" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+  </table_structure>
+  <table_data name="#__languages">
+   <row>
+    <field name="lang_id">1</field>
+    <field name="lang_code">en-GB</field>
+    <field name="title">English (UK)</field>
+    <field name="title_native">English (UK)</field>
+    <field name="sef">en</field>
+    <field name="image">en</field>
+    <field name="description"></field>
+    <field name="metakey"></field>
+    <field name="metadesc"></field>
+    <field name="sitename"></field>
+    <field name="published">1</field>
+    <field name="access">0</field>
+    <field name="ordering">1</field>
+   </row>
+  </table_data>
+  <table_structure name="#__session">
+   <field Field="session_id" Type="varchar(200)" Null="NO" Key="PRI" Default="" Extra="" Comment="" />
+   <field Field="client_id" Type="tinyint(3) unsigned" Null="NO" Key="" Default="0" Extra="" Comment="" />
+   <field Field="guest" Type="tinyint(4) unsigned" Null="YES" Key="" Default="1" Extra="" Comment="" />
+   <field Field="time" Type="varchar(14)" Null="YES" Key="MUL" Default="" Extra="" Comment="" />
+   <field Field="data" Type="mediumtext" Null="YES" Key="" Extra="" Comment="" />
+   <field Field="userid" Type="int(11)" Null="YES" Key="MUL" Default="0" Extra="" Comment="" />
+   <field Field="username" Type="varchar(150)" Null="YES" Key="" Default="" Extra="" Comment="" />
+   <key Table="#__session" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="session_id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__session" Non_unique="1" Key_name="userid" Seq_in_index="1" Column_name="userid" Collation="A" Null="YES" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__session" Non_unique="1" Key_name="time" Seq_in_index="1" Column_name="time" Collation="A" Null="YES" Index_type="BTREE" Comment="" Index_comment="" />
+  </table_structure>
+  <table_data name="#__session">
+  </table_data>
+  <table_structure name="#__status">
+   <field Field="id" Type="int(10) unsigned" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
+   <field Field="status" Type="varchar(255)" Null="YES" Key="" Extra="" Comment="" />
+   <field Field="closed" Type="tinyint(4)" Null="NO" Key="" Default="0" Extra="" Comment="" />
+   <key Table="#__status" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+  </table_structure>
+  <table_data name="#__status">
+   <row>
+    <field name="id">1</field>
+    <field name="status">open</field>
+    <field name="closed">0</field>
+   </row>
+   <row>
+    <field name="id">2</field>
+    <field name="status">confirmed</field>
+    <field name="closed">0</field>
+   </row>
+   <row>
+    <field name="id">3</field>
+    <field name="status">pending</field>
+    <field name="closed">0</field>
+   </row>
+   <row>
+    <field name="id">4</field>
+    <field name="status">rtc</field>
+    <field name="closed">0</field>
+   </row>
+   <row>
+    <field name="id">5</field>
+    <field name="status">fixed</field>
+    <field name="closed">1</field>
+   </row>
+   <row>
+    <field name="id">6</field>
+    <field name="status">review</field>
+    <field name="closed">0</field>
+   </row>
+   <row>
+    <field name="id">7</field>
+    <field name="status">info</field>
+    <field name="closed">0</field>
+   </row>
+   <row>
+    <field name="id">8</field>
+    <field name="status">platform</field>
+    <field name="closed">1</field>
+   </row>
+   <row>
+    <field name="id">9</field>
+    <field name="status">no_reply</field>
+    <field name="closed">1</field>
+   </row>
+   <row>
+    <field name="id">10</field>
+    <field name="status">closed</field>
+    <field name="closed">1</field>
+   </row>
+   <row>
+    <field name="id">11</field>
+    <field name="status">expected</field>
+    <field name="closed">1</field>
+   </row>
+   <row>
+    <field name="id">12</field>
+    <field name="status">known</field>
+    <field name="closed">1</field>
+   </row>
+  </table_data>
+  <table_structure name="#__tracker_fields_values">
+   <field Field="id" Type="int(10) unsigned" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
+   <field Field="issue_id" Type="int(10) unsigned" Null="NO" Key="MUL" Extra="" Comment="" />
+   <field Field="field_id" Type="int(11)" Null="NO" Key="" Extra="" Comment="" />
+   <field Field="value" Type="mediumtext" Null="NO" Key="" Extra="" Comment="" />
+   <key Table="#__tracker_fields_values" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__tracker_fields_values" Non_unique="1" Key_name="issue_id" Seq_in_index="1" Column_name="issue_id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+  </table_structure>
+  <table_data name="#__tracker_fields_values">
+  </table_data>
+  <table_structure name="#__tracker_projects">
+   <field Field="project_id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="PK" />
+   <field Field="title" Type="varchar(150)" Null="NO" Key="" Extra="" Comment="Project title" />
+   <field Field="alias" Type="varchar(150)" Null="NO" Key="MUL" Extra="" Comment="Project URL alias" />
+   <field Field="gh_user" Type="varchar(150)" Null="NO" Key="" Extra="" Comment="GitHub user" />
+   <field Field="gh_project" Type="varchar(150)" Null="NO" Key="" Extra="" Comment="GitHub project" />
+   <field Field="ext_tracker_link" Type="varchar(500)" Null="NO" Key="" Extra="" Comment="A tracker link format (e.g. http://tracker.com/issue/%d)" />
+   <key Table="#__tracker_projects" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="project_id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__tracker_projects" Non_unique="1" Key_name="alias" Seq_in_index="1" Column_name="alias" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+  </table_structure>
+  <table_data name="#__tracker_projects">
+   <row>
+    <field name="project_id">1</field>
+    <field name="title">Joomla! CMS 3 issues</field>
+    <field name="alias">joomla-cms-3-issues</field>
+    <field name="gh_user">joomla</field>
+    <field name="gh_project">joomla-cms</field>
+    <field name="ext_tracker_link">http://joomlacode.org/gf/project/joomla/tracker/?action=TrackerItemEdit&amp;tracker_item_id=%d</field>
+   </row>
+   <row>
+    <field name="project_id">2</field>
+    <field name="title">J!Tracker Bugs</field>
+    <field name="alias">jtracker-bugs</field>
+    <field name="gh_user">joomla</field>
+    <field name="gh_project">jissues</field>
+    <field name="ext_tracker_link"></field>
+   </row>
+   <row>
+    <field name="project_id">3</field>
+    <field name="title">Joomla! Security</field>
+    <field name="alias">joomla-security</field>
+    <field name="gh_user"></field>
+    <field name="gh_project"></field>
+    <field name="ext_tracker_link"></field>
+   </row>
+  </table_data>
+  <table_structure name="#__user_accessgroup_map">
+   <field Field="user_id" Type="int(10) unsigned" Null="NO" Key="PRI" Default="0" Extra="" Comment="Foreign Key to #__users.id" />
+   <field Field="group_id" Type="int(10) unsigned" Null="NO" Key="PRI" Default="0" Extra="" Comment="Foreign Key to #__usergroups.id" />
+   <key Table="#__user_accessgroup_map" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="user_id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__user_accessgroup_map" Non_unique="0" Key_name="PRIMARY" Seq_in_index="2" Column_name="group_id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+  </table_structure>
+  <table_data name="#__user_accessgroup_map">
+  </table_data>
+  <table_structure name="#__users">
+   <field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="PK" />
+   <field Field="name" Type="varchar(255)" Null="NO" Key="MUL" Default="" Extra="" Comment="The users name" />
+   <field Field="username" Type="varchar(150)" Null="NO" Key="MUL" Default="" Extra="" Comment="The users username" />
+   <field Field="email" Type="varchar(100)" Null="NO" Key="MUL" Default="" Extra="" Comment="The users e-mail" />
+   <field Field="block" Type="tinyint(4)" Null="NO" Key="MUL" Default="0" Extra="" Comment="If the user is blocked" />
+   <field Field="sendEmail" Type="tinyint(4)" Null="YES" Key="" Default="0" Extra="" Comment="If the users recieves e-mail" />
+   <field Field="registerDate" Type="datetime" Null="NO" Key="" Default="0000-00-00 00:00:00" Extra="" Comment="The register date" />
+   <field Field="lastvisitDate" Type="datetime" Null="NO" Key="" Default="0000-00-00 00:00:00" Extra="" Comment="The last visit date" />
+   <field Field="params" Type="text" Null="NO" Key="" Extra="" Comment="Parameters" />
+   <key Table="#__users" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__users" Non_unique="1" Key_name="idx_name" Seq_in_index="1" Column_name="name" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__users" Non_unique="1" Key_name="idx_block" Seq_in_index="1" Column_name="block" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__users" Non_unique="1" Key_name="username" Seq_in_index="1" Column_name="username" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+   <key Table="#__users" Non_unique="1" Key_name="email" Seq_in_index="1" Column_name="email" Collation="A" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+  </table_structure>
+  <table_data name="#__users">
+  </table_data>
+ </database>
+</mysqldump>
