@@ -5,10 +5,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="blue" />
     <link href="{{ uri.base.path }}css/template.css" rel="stylesheet" media="screen">
-    <!--
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ uri.base.path }}images/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ uri.base.path }}images/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ uri.base.path }}images/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="{{ uri.base.path }}images/apple-touch-icon-57-precomposed.png">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
-    -->
     <style type="text/css">
         h1, h2, h3, h4, h5, h6, .site-title {
             font-family: 'Open Sans', sans-serif;
@@ -120,9 +124,6 @@
                             </ul>
                         </li>
                     </ul>
-                    <form id="nav-search" class="navbar-search pull-right">
-                        <input type="text" class="search-query" placeholder="Search">
-                    </form>
                 </div>
             </div>
         </div>
@@ -154,7 +155,7 @@
     </div>
 </header>
 
-<div class="subnav" data-spy="affix" data-offset-top="68">
+<div class="subnav" data-spy="affix" data-offset-top="25">
     <div class="container">
         {% block subnav %}
             <ul class="nav menu nav-pills">
@@ -211,7 +212,7 @@
                     </li>
                 </ul>
 
-                <p>&copy; 2005 - 2013
+                <p>&copy; 2005 - {{ now|date("Y") }}
                     <a href="http://www.opensourcematters.org">Open Source Matters, Inc.</a> All rights reserved.</p>
             </div>
         {% endblock %}

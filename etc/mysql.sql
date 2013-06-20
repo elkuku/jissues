@@ -341,3 +341,22 @@ CREATE TABLE IF NOT EXISTS `#__languages` (
 
 INSERT INTO `#__languages` (`lang_id`, `lang_code`, `title`, `title_native`, `sef`, `image`, `description`, `metakey`, `metadesc`, `sitename`, `published`, `access`, `ordering`) VALUES
 (1, 'en-GB', 'English (UK)', 'English (UK)', 'en', 'en', '', '', '', '', 1, 0, 1);
+
+--
+-- Dumping data for table `#__articles`
+--
+
+CREATE TABLE IF NOT EXISTS `#__articles` (
+  `article_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'PK',
+  `title` varchar(250) NOT NULL COMMENT 'The article title',
+  `alias` varchar(250) NOT NULL COMMENT 'The article alias.',
+  `text` text NOT NULL COMMENT 'The article text.',
+  `text_md` text NOT NULL COMMENT 'The raw article text.',
+  `created_date` datetime NOT NULL COMMENT 'The created date.',
+  PRIMARY KEY (`article_id`),
+  KEY `alias` (`alias`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `#__articles`
+(`title`, `alias`, `text`, `text_md`, `created_date`) VALUES
+('The J!Tracker Project', 'about', '<p>Some info about the project here...</p>', 'Some info about the project here...', '2013-06-18 20:20:41');
