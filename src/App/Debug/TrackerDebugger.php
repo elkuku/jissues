@@ -6,6 +6,9 @@
 
 namespace App\Debug;
 
+use g11n\g11n;
+use g11n\Language\Debugger;
+
 use Joomla\Factory;
 use Joomla\Profiler\Profiler;
 
@@ -23,19 +26,20 @@ use App\Debug\Format\Html\TableFormat;
 class TrackerDebugger
 {
 	/**
-	 * @var TrackerApplication
+	 * @var    TrackerApplication
+	 * @since  1.0
 	 */
 	private $application;
 
 	/**
-	 * @var array
-	 * @since   1.0
+	 * @var    array
+	 * @since  1.0
 	 */
 	private $log = array();
 
 	/**
-	 * @var Profiler
-	 * @since   1.0
+	 * @var    Profiler
+	 * @since  1.0
 	 */
 	private $profiler;
 
@@ -43,6 +47,8 @@ class TrackerDebugger
 	 * Constructor.
 	 *
 	 * @param   TrackerApplication  $application  The application
+	 *
+	 * @since   1.0
 	 */
 	public function __construct(TrackerApplication $application)
 	{
@@ -76,8 +82,9 @@ class TrackerDebugger
 	 *
 	 * @param   string  $name  The profile point name.
 	 *
+	 * @return  \Joomla\Profiler\ProfilerInterface
+	 *
 	 * @since   1.0
-	 * @return \Joomla\Profiler\ProfilerInterface
 	 */
 	public function mark($name)
 	{
@@ -91,8 +98,9 @@ class TrackerDebugger
 	 * @param   string  $message  The message
 	 * @param   array   $context  The log context.
 	 *
+	 * @return  $this
+	 *
 	 * @since   1.0
-	 * @return $this
 	 */
 	public function addDatabaseEntry($level, $message, $context)
 	{
@@ -164,10 +172,10 @@ class TrackerDebugger
 	 *
 	 * @param   string  $category  The log category.
 	 *
-	 * @throws \UnexpectedValueException
+	 * @return  array
 	 *
 	 * @since   1.0
-	 * @return array
+	 * @throws  \UnexpectedValueException
 	 */
 	public function getLog($category = '')
 	{
@@ -187,8 +195,9 @@ class TrackerDebugger
 	/**
 	 * Get the debug output.
 	 *
-	 * @since   1.0
 	 * @return  string
+	 *
+	 * @since   1.0
 	 */
 	public function getOutput()
 	{
@@ -223,8 +232,14 @@ class TrackerDebugger
     <li><a href="#dbgDatabase">Database</a></li>
     <li><a href="#dbgProfile">Profile</a></li>
     <li><a href="#dbgUser">User</a></li>
-    <li><a href="#dbgProject">Project</a></li>
-    </ul>';
+    <li><a href="#dbgProject">Project</a></li>';
+
+		if ($this->application->get('debug.language'))
+		{
+			$debug[] = '<li><a href="#dbgLanguage">Language</a></li>';
+		}
+
+		$debug[] = '</ul>';
 		$debug[] = '</div>';
 
 		$dbLog = $this->getLog('db');
@@ -307,7 +322,14 @@ class TrackerDebugger
 		echo '<h3><a class="muted" href="javascript:;" name="dbgProject">Project</a></h3>';
 		var_dump($session->get('project'));
 
+		if ($this->application->get('debug.language'))
+		{
+			echo '<h3><a class="muted" href="javascript:;" name="dbgLanguage">Language</a></h3>';
+			$this->renderLanguage();
+		}
+
 		$debug[] = ob_get_clean();
+		$debug[] = '</div>';
 
 		return implode("\n", $debug);
 	}
@@ -315,12 +337,27 @@ class TrackerDebugger
 	/**
 	 * Render the profiler output.
 	 *
+	 * @return  string
+	 *
 	 * @since   1.0
-	 * @return string
 	 */
 	public function renderProfile()
 	{
 		return $this->profiler->render();
+	}
+
+	/**
+	 * Render language debug information.
+	 *
+	 * @since  1.0
+	 * @return void
+	 */
+	public function renderLanguage()
+	{
+		g11n::debugPrintTranslateds();
+
+		echo '<h2>Language files loaded</h2>';
+		g11n::printEvents();
 	}
 
 	/**
@@ -380,6 +417,8 @@ class TrackerDebugger
 	 * @param   integer     $statusCode  The status code.
 	 *
 	 * @return  void
+	 *
+	 * @since   1.0
 	 */
 	protected function writeLog(\Exception $exception, $message, $statusCode)
 	{
@@ -394,6 +433,8 @@ class TrackerDebugger
 			case 404 :
 			case 500 :
 				$log[] = '';
+				$log[] = date('y-m-d H:i:s');
+				$log[] = $this->application->get('uri.request');
 				$log[] = $exception->getMessage();
 
 				if ($message)
@@ -406,6 +447,8 @@ class TrackerDebugger
 
 			default :
 				$log[] = '';
+				$log[] = date('y-m-d H:i:s');
+				$log[] = $this->application->get('uri.request');
 				$log[] = 'Unknown status code: ' . $code;
 				$log[] = $exception->getMessage();
 
@@ -433,7 +476,9 @@ class TrackerDebugger
 	 *
 	 * @param   string  $type  The log type.
 	 *
-	 * @return string
+	 * @return  string
+	 *
+	 * @since   1.0
 	 */
 	public function getLogPath($type)
 	{
