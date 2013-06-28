@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "48e7d0636385a143e553516753dc0282",
+    "hash": "aa8f480e1a057757fd492b49e28369eb",
     "packages": [
         {
             "name": "elkuku/console-progressbar",
@@ -48,6 +48,42 @@
                 "console"
             ],
             "time": "2013-04-22 19:52:37"
+        },
+        {
+            "name": "elkuku/g11n",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/elkuku/g11n.git",
+                "reference": "f8f9bb0dafb8234af99e74d9a74fce756ef35804"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/elkuku/g11n/zipball/f8f9bb0dafb8234af99e74d9a74fce756ef35804",
+                "reference": "f8f9bb0dafb8234af99e74d9a74fce756ef35804",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.10"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "g11n": "library/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL"
+            ],
+            "authors": [
+                {
+                    "name": "Nikolai Plath",
+                    "email": "der.el.kuku@gmail.com"
+                }
+            ],
+            "description": "The g11n language library",
+            "time": "2013-06-27 00:33:32"
         },
         {
             "name": "joomla/framework",
@@ -480,6 +516,7 @@
     "stability-flags": {
         "joomla/framework": 20,
         "symfony/http-foundation": 0,
+        "elkuku/g11n": 20,
         "raveren/kint": 20
     },
     "platform": {
