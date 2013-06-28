@@ -6,7 +6,6 @@
 
 namespace JTracker\Application;
 
-use App\Debug\Logger\CallbackLogger;
 use App\Debug\TrackerDebugger;
 
 use App\Projects\Model\ProjectModel;
@@ -14,7 +13,6 @@ use App\Projects\Table\ProjectsTable;
 use App\Projects\TrackerProject;
 
 use g11n\g11n;
-use g11n\Support\ExtensionHelper;
 
 use Joomla\Application\AbstractWebApplication;
 use Joomla\Controller\ControllerInterface;
@@ -94,6 +92,14 @@ final class TrackerApplication extends AbstractWebApplication
 	 * @since  1.0
 	 */
 	private $database;
+
+	/**
+	 * The Language object
+	 *
+	 * @var    Language
+	 * @since  1.0
+	 */
+	private $language;
 
 	/**
 	 * The Debugger object
@@ -181,10 +187,7 @@ final class TrackerApplication extends AbstractWebApplication
 
 			$this->mark('Application terminated');
 
-			if (JDEBUG)
-			{
-				$contents = str_replace('%%%DEBUG%%%', $this->debugger->getOutput(), $contents);
-			}
+			$contents = str_replace('%%%DEBUG%%%', $this->debugger->getOutput(), $contents);
 
 			$this->setBody($contents);
 		}
@@ -194,22 +197,22 @@ final class TrackerApplication extends AbstractWebApplication
 
 			$this->mark('Application terminated with an AUTH EXCEPTION');
 
-			$message = array();
-			$message[] = 'Authentication failure';
+			$context = array();
+			$context['message'] = 'Authentication failure';
 
 			if (JDEBUG)
 			{
 				// The exceptions contains the User object and the action.
 				if ($exception->getUser()->username)
 				{
-					$message[] = 'user: ' . $exception->getUser()->username;
-					$message[] = 'id: ' . $exception->getUser()->id;
+					$context['user'] = $exception->getUser()->username;
+					$context['id'] = $exception->getUser()->id;
 				}
 
-				$message[] = 'action: ' . $exception->getAction();
+				$context['action'] = $exception->getAction();
 			}
 
-			$this->setBody($this->debugger->renderException($exception, implode("\n", $message)));
+			$this->setBody($this->debugger->renderException($exception, $context));
 		}
 		catch (RoutingException $exception)
 		{
@@ -217,9 +220,9 @@ final class TrackerApplication extends AbstractWebApplication
 
 			$this->mark('Application terminated with a ROUTING EXCEPTION');
 
-			$message = JDEBUG ? $exception->getRawRoute() : '';
+			$context = JDEBUG ? array('message' => $exception->getRawRoute()) : array();
 
-			$this->setBody($this->debugger->renderException($exception, $message));
+			$this->setBody($this->debugger->renderException($exception, $context));
 		}
 		catch (\Exception $exception)
 		{
@@ -330,7 +333,7 @@ final class TrackerApplication extends AbstractWebApplication
 	protected function executeApp(ControllerInterface $controller, $app)
 	{
 		// Load the App language file
-		ExtensionHelper::addDomainPath('App', JPATH_BASE . '/src/App');
+		g11n::addDomainPath('App', JPATH_BASE . '/src/App');
 		g11n::loadLanguage($app, 'App');
 
 		// Start an output buffer.
@@ -423,17 +426,6 @@ final class TrackerApplication extends AbstractWebApplication
 				)
 			);
 
-			if ($this->get('debug.system'))
-			{
-				$this->database->setDebug(true);
-
-				$this->database->setLogger(
-					new CallbackLogger(
-						array($this->debugger, 'addDatabaseEntry')
-					)
-				);
-			}
-
 			// @todo Decouple from Factory
 			Factory::$database = $this->database;
 		}
@@ -449,13 +441,40 @@ final class TrackerApplication extends AbstractWebApplication
 	 */
 	protected function loadLanguage()
 	{
-		g11n::setApplication($this);
+		// Get the language tag from user input.
+		$lang = $this->input->get('lang');
+
+		if ($lang)
+		{
+			if (false == in_array($lang, $this->get('languages')))
+			{
+				// Unknown language from user input - fall back to default
+				$lang = g11n::getDefault();
+			}
+
+			// Store the language tag to the session.
+			$this->getSession()->set('lang', $lang);
+		}
+		else
+		{
+			// Get the language tag from the session.
+			$lang = $this->getSession()->get('lang');
+		}
+
+		if ($lang)
+		{
+			// Set the current language if anything has been found.
+			g11n::setCurrent($lang);
+		}
+
+		// Set language debugging
 		g11n::setDebug($this->get('debug.language'));
 
-		ExtensionHelper::setCacheDir(JPATH_BASE . '/cache');
+		// Set the directory used to store language cache files
+		g11n::setCacheDir(JPATH_BASE . '/cache');
 
 		// Load the core language file
-		ExtensionHelper::addDomainPath('Core', JPATH_BASE . '/src');
+		g11n::addDomainPath('Core', JPATH_BASE . '/src');
 		g11n::loadLanguage('JTracker', 'Core');
 
 		return $this;
@@ -470,7 +489,7 @@ final class TrackerApplication extends AbstractWebApplication
 	protected function loadTemplate()
 	{
 		// Load template language files.
-		ExtensionHelper::addDomainPath('Template', JPATH_BASE . '/templates');
+		g11n::addDomainPath('Template', JPATH_BASE . '/templates');
 		g11n::loadLanguage('JTracker', 'Template');
 
 		return $this;
