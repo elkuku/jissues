@@ -1,6 +1,8 @@
 <?php
 /**
- * @copyright  Copyright (C) 2013 Open Source Matters, Inc. All rights reserved.
+ * Part of the Joomla Tracker View Package
+ *
+ * @copyright  Copyright (C) 2012 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -13,7 +15,7 @@ use Joomla\Factory;
 use JTracker\Application\TrackerApplication;
 
 /**
- * Tracker Twig extension class.
+ * Twig extension class
  *
  * @since  1.0
  */
@@ -55,6 +57,8 @@ class TrackerExtension extends \Twig_Extension
 	 * Returns a list of functions to add to the existing list.
 	 *
 	 * @return  array  An array of functions.
+	 *
+	 * @since   1.0
 	 */
 	public function getFunctions()
 	{
@@ -78,7 +82,9 @@ class TrackerExtension extends \Twig_Extension
 	/**
 	 * Returns a list of filters to add to the existing list.
 	 *
-	 * @return  array An array of filters
+	 * @return  array  An array of filters
+	 *
+	 * @since   1.0
 	 */
 	public function getFilters()
 	{
@@ -88,6 +94,8 @@ class TrackerExtension extends \Twig_Extension
 			new \Twig_SimpleFilter('json_decode', 'json_decode'),
 			new \Twig_SimpleFilter('stripJRoot', array($this, 'stripJRoot')),
 			new \Twig_SimpleFilter('_', 'g11n3t'),
+			new \Twig_SimpleFilter('contrastColor', array($this, 'getContrastColor')),
+			new \Twig_SimpleFilter('labels', array($this, 'renderLabels')),
 		);
 	}
 
@@ -97,6 +105,8 @@ class TrackerExtension extends \Twig_Extension
 	 * @param   string  $string  The string to process.
 	 *
 	 * @return  mixed
+	 *
+	 * @since   1.0
 	 */
 	public function stripJRoot($string)
 	{
@@ -110,10 +120,12 @@ class TrackerExtension extends \Twig_Extension
 	 * @param   integer  $width     The with in pixel.
 	 *
 	 * @return  string
+	 *
+	 * @since   1.0
 	 */
 	public function fetchAvatar($userName = '', $width = 0)
 	{
-		/* @var TrackerApplication $app */
+		/* @type TrackerApplication $app */
 		$app = Factory::$application;
 
 		$base = $app->get('uri.base.path');
@@ -135,6 +147,8 @@ class TrackerExtension extends \Twig_Extension
 	 * @param   integer  $priority  The priority
 	 *
 	 * @return  string
+	 *
+	 * @since   1.0
 	 */
 	public function getPrioClass($priority)
 	{
@@ -166,6 +180,8 @@ class TrackerExtension extends \Twig_Extension
 	 * Dummy function to prevent throwing exception on dump function in the non-debug mode.
 	 *
 	 * @return  void
+	 *
+	 * @since   1.0
 	 */
 	public function dump()
 	{
@@ -177,8 +193,10 @@ class TrackerExtension extends \Twig_Extension
 	 *
 	 * @param   integer  $id  The id
 	 *
-	 * @throws \UnexpectedValueException
-	 * @return object
+	 * @return  object
+	 *
+	 * @since   1.0
+	 * @throws  \UnexpectedValueException
 	 */
 	public function getStatus($id)
 	{
@@ -186,7 +204,7 @@ class TrackerExtension extends \Twig_Extension
 
 		if (!$statuses)
 		{
-			/* @type \JTracker\Application\TrackerApplication $application */
+			/* @type TrackerApplication $application */
 			$application = Factory::$application;
 
 			$db = $application->getDatabase();
@@ -210,5 +228,67 @@ class TrackerExtension extends \Twig_Extension
 		}
 
 		return $statuses[$id];
+	}
+
+	/**
+	 * Get a contrasting color (black or white).
+	 *
+	 * http://24ways.org/2010/calculating-color-contrast/
+	 *
+	 * @param   string  $hexColor  The hex color.
+	 *
+	 * @return string
+	 */
+	public function getContrastColor($hexColor)
+	{
+		$r = hexdec(substr($hexColor, 0, 2));
+		$g = hexdec(substr($hexColor, 2, 2));
+		$b = hexdec(substr($hexColor, 4, 2));
+		$yiq = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+
+		return ($yiq >= 128) ? 'black' : 'white';
+	}
+
+	/**
+	 * Render a list of labels.
+	 *
+	 * @param   string  $idsString  Comma separated list of IDs.
+	 *
+	 * @return string
+	 *
+	 * @since  1.0
+	 */
+	public function renderLabels($idsString)
+	{
+		static $labels;
+
+		if (!$labels)
+		{
+			$labels = Factory::$application->getProject()->getLabels();
+		}
+
+		$html = array();
+
+		$ids = ($idsString) ? explode(',', $idsString) : array();
+
+		foreach ($ids as $id)
+		{
+			if (array_key_exists($id, $labels))
+			{
+				$bgColor = $labels[$id]->color;
+				$color   = $this->getContrastColor($bgColor);
+			}
+			else
+			{
+				$bgColor = '000000';
+				$color   = 'ffffff';
+			}
+
+			$html[] = '<label class="label"' . ' style="background-color: #' . $bgColor . '; color: ' . $color . ';">';
+			$html[] = $labels[$id]->name;
+			$html[] = '</label>';
+		}
+
+		return implode("\n", $html);
 	}
 }

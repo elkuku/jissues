@@ -98,6 +98,7 @@
                                 <a href="{{ uri.base.path }}tracker/{{ project.alias }}/{{ item.issue_number }}">
                                     {{ item.title|e }}
                                 </a>
+                                    {{ item.labels|labels|raw }}
                                     {% if project.gh_user and project.gh_project %}
                                         <br/>
                                         {{ translate('GitHub ID') }}
