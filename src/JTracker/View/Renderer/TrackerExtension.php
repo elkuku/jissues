@@ -10,9 +10,7 @@ namespace JTracker\View\Renderer;
 
 use g11n\g11n;
 
-use Joomla\Factory;
-
-use JTracker\Application\TrackerApplication;
+use JTracker\Container;
 
 /**
  * Twig extension class
@@ -42,8 +40,8 @@ class TrackerExtension extends \Twig_Extension
 	 */
 	public function getGlobals()
 	{
-		/* @var TrackerApplication $app */
-		$app = Factory::$application;
+		/* @var \JTracker\Application $app */
+		$app = Container::retrieve('app');
 
 		return array(
 			'uri'    => $app->get('uri'),
@@ -64,11 +62,14 @@ class TrackerExtension extends \Twig_Extension
 	{
 		$functions = array(
 			new \Twig_SimpleFunction('translate', 'g11n3t'),
+			new \Twig_SimpleFunction('g11n4t', 'g11n4t'),
 			new \Twig_SimpleFunction('sprintf', 'sprintf'),
 			new \Twig_SimpleFunction('stripJRoot', array($this, 'stripJRoot')),
 			new \Twig_SimpleFunction('avatar', array($this, 'fetchAvatar')),
 			new \Twig_SimpleFunction('prioClass', array($this, 'getPrioClass')),
 			new \Twig_SimpleFunction('statuses', array($this, 'getStatus')),
+			new \Twig_SimpleFunction('issueLink', array($this, 'issueLink')),
+			new \Twig_SimpleFunction('getRelTypes', array($this, 'getRelTypes')),
 		);
 
 		if (!JDEBUG)
@@ -93,14 +94,15 @@ class TrackerExtension extends \Twig_Extension
 			new \Twig_SimpleFilter('get_class', 'get_class'),
 			new \Twig_SimpleFilter('json_decode', 'json_decode'),
 			new \Twig_SimpleFilter('stripJRoot', array($this, 'stripJRoot')),
-			new \Twig_SimpleFilter('_', 'g11n3t'),
 			new \Twig_SimpleFilter('contrastColor', array($this, 'getContrastColor')),
 			new \Twig_SimpleFilter('labels', array($this, 'renderLabels')),
+			new \Twig_SimpleFilter('yesno', array($this, 'yesNo')),
+			new \Twig_SimpleFilter('_', 'g11n3t'),
 		);
 	}
 
 	/**
-	 * Replaces the Joomla! root path defined by the constant "JPATH_BASE" with the string "JROOT".
+	 * Replaces the Joomla! root path defined by the constant "JPATH_ROOT" with the string "JROOT".
 	 *
 	 * @param   string  $string  The string to process.
 	 *
@@ -110,7 +112,7 @@ class TrackerExtension extends \Twig_Extension
 	 */
 	public function stripJRoot($string)
 	{
-		return str_replace(JPATH_BASE, 'JROOT', $string);
+		return str_replace(JPATH_ROOT, 'JROOT', $string);
 	}
 
 	/**
@@ -125,16 +127,17 @@ class TrackerExtension extends \Twig_Extension
 	 */
 	public function fetchAvatar($userName = '', $width = 0)
 	{
-		/* @type TrackerApplication $app */
-		$app = Factory::$application;
+		/* @type \JTracker\Application $app */
+		$app = Container::retrieve('app');
 
 		$base = $app->get('uri.base.path');
 
 		$avatar = $userName ? $userName . '.png' : 'user-default.png';
 
-		$width = $width ? ' width="' . $width . 'px"' : '';
+		$width = $width ? ' style="width: ' . $width . 'px"' : '';
 
 		return '<img'
+		. ' class="avatar"'
 		. ' alt="avatar ' . $userName . '"'
 		. ' src="' . $base . 'images/avatars/' . $avatar . '"'
 		. $width
@@ -152,28 +155,23 @@ class TrackerExtension extends \Twig_Extension
 	 */
 	public function getPrioClass($priority)
 	{
-		$class = '';
-
 		switch ($priority)
 		{
 			case 1 :
-				$class = 'badge-important';
-				break;
+				return 'badge-important';
 
 			case 2 :
-				$class = 'badge-warning';
-				break;
+				return 'badge-warning';
 
 			case 3 :
-				$class = 'badge-info';
-				break;
+				return 'badge-info';
 
 			case 4 :
-				$class = 'badge-inverse';
-				break;
-		}
+				return 'badge-inverse';
 
-		return $class;
+			default :
+				return '';
+		}
 	}
 
 	/**
@@ -204,10 +202,7 @@ class TrackerExtension extends \Twig_Extension
 
 		if (!$statuses)
 		{
-			/* @type TrackerApplication $application */
-			$application = Factory::$application;
-
-			$db = $application->getDatabase();
+			$db = Container::retrieve('db');
 
 			$items = $db->setQuery(
 				$db->getQuery(true)
@@ -237,7 +232,9 @@ class TrackerExtension extends \Twig_Extension
 	 *
 	 * @param   string  $hexColor  The hex color.
 	 *
-	 * @return string
+	 * @return  string
+	 *
+	 * @since   1.0
 	 */
 	public function getContrastColor($hexColor)
 	{
@@ -254,9 +251,9 @@ class TrackerExtension extends \Twig_Extension
 	 *
 	 * @param   string  $idsString  Comma separated list of IDs.
 	 *
-	 * @return string
+	 * @return  string
 	 *
-	 * @since  1.0
+	 * @since   1.0
 	 */
 	public function renderLabels($idsString)
 	{
@@ -264,7 +261,10 @@ class TrackerExtension extends \Twig_Extension
 
 		if (!$labels)
 		{
-			$labels = Factory::$application->getProject()->getLabels();
+			/* @type \JTracker\Application $application */
+			$application = Container::retrieve('app');
+
+			$labels = $application->getProject()->getLabels();
 		}
 
 		$html = array();
@@ -284,11 +284,70 @@ class TrackerExtension extends \Twig_Extension
 				$color   = 'ffffff';
 			}
 
-			$html[] = '<label class="label"' . ' style="background-color: #' . $bgColor . '; color: ' . $color . ';">';
+			$html[] = '<span class="label"' . ' style="background-color: #' . $bgColor . '; color: ' . $color . ';">';
 			$html[] = $labels[$id]->name;
-			$html[] = '</label>';
+			$html[] = '</span>';
 		}
 
 		return implode("\n", $html);
+	}
+
+	/**
+	 * Get HTML for an issue link.
+	 *
+	 * @param   integer  $number  Issue number.
+	 * @param   boolean  $closed  Issue closed status.
+	 * @param   string   $title   Issue title.
+	 *
+	 * @return  string
+	 *
+	 * @since   1.0
+	 */
+	public function issueLink($number, $closed, $title = '')
+	{
+		/* @type \JTracker\Application $application */
+		$application = Container::retrieve('app');
+
+		$html = array();
+
+		$title = ($title) ? : ' #' . $number;
+		$href = $application->get('uri')->base->path . 'tracker/' . $application->getProject()->alias . '/' . $number;
+
+		$html[] = '<a href="' . $href . '"' . ' title="' . $title . '"' . '>';
+		$html[] = $closed ? '<del># ' . $number . '</del>' : '# ' . $number;
+		$html[] = '</a>';
+
+		return implode("\n", $html);
+	}
+
+	/**
+	 * Get relation types.
+	 *
+	 * @return  array
+	 *
+	 * @since   1.0
+	 */
+	public function getRelTypes()
+	{
+		static $relTypes = array();
+
+		if (!$relTypes)
+		{
+			$db = Container::retrieve('db');
+
+			$relTypes = $db->setQuery(
+				$db->getQuery(true)
+					->from($db->quoteName('#__issues_relations_types'))
+					->select($db->quoteName('id', 'value'))
+					->select($db->quoteName('name', 'text'))
+			)->loadObjectList();
+		}
+
+		return $relTypes;
+	}
+
+	public function yesNo($value)
+	{
+		return $value ? g11n3t('Yes') : g11n3t('No');
 	}
 }

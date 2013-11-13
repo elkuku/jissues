@@ -7,13 +7,13 @@
 namespace App\Debug;
 
 use g11n\g11n;
-use g11n\Language\Debugger;
 
-use Joomla\Factory;
+use Joomla\Application\AbstractApplication;
 use Joomla\Profiler\Profiler;
 
 use Joomla\Utilities\ArrayHelper;
-use JTracker\Application\TrackerApplication;
+use JTracker\Application;
+use JTracker\Container;
 
 use App\Debug\Database\DatabaseDebugger;
 use App\Debug\Format\Html\SqlFormat;
@@ -22,7 +22,6 @@ use App\Debug\Handler\ProductionHandler;
 
 use Kint;
 
-use Monolog\Handler\FirePHPHandler;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -42,7 +41,7 @@ use Whoops\Run;
 class TrackerDebugger implements LoggerAwareInterface
 {
 	/**
-	 * @var    TrackerApplication
+	 * @var    Application
 	 * @since  1.0
 	 */
 	private $application;
@@ -60,18 +59,19 @@ class TrackerDebugger implements LoggerAwareInterface
 	private $profiler;
 
 	/**
-	 * @var Logger
+	 * @var    Logger
+	 * @since  1.0
 	 */
 	private $logger;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param   TrackerApplication  $application  The application
+	 * @param   AbstractApplication  $application  The application
 	 *
 	 * @since   1.0
 	 */
-	public function __construct(TrackerApplication $application)
+	public function __construct(AbstractApplication $application)
 	{
 		$this->application = $application;
 
@@ -89,20 +89,40 @@ class TrackerDebugger implements LoggerAwareInterface
 			$handler = new ProductionHandler;
 		}
 
-		$run = new Run;
-		$run->pushHandler($handler);
-		$run->register();
+		with(new Run)
+			->pushHandler($handler)
+			->register();
 	}
 
 	/**
 	 * Set up loggers.
 	 *
-	 * @since  1.0
-	 * @return $this
+	 * @return  $this
+	 *
+	 * @since   1.0
 	 */
 	protected function setupLogging()
 	{
 		$this->log['db'] = array();
+
+		if ($this->application->get('debug.database'))
+		{
+			$logger = new Logger('JTracker');
+
+			$logger->pushHandler(
+				new StreamHandler(
+					$this->getLogPath('root') . '/database.log',
+					Logger::DEBUG
+				)
+			);
+
+			$logger->pushProcessor(array($this, 'addDatabaseEntry'));
+			$logger->pushProcessor(new WebProcessor);
+
+			$db = Container::retrieve('db');
+			$db->setLogger($logger);
+			$db->setDebug(true);
+		}
 
 		if (!$this->application->get('debug.logging'))
 		{
@@ -124,24 +144,6 @@ class TrackerDebugger implements LoggerAwareInterface
 		$logger->pushProcessor(new WebProcessor);
 
 		$this->setLogger($logger);
-
-		if ($this->application->get('debug.database'))
-		{
-			$logger = new Logger('JTracker');
-
-			$logger->pushHandler(
-				new StreamHandler(
-					$this->getLogPath('root') . '/database.log',
-					Logger::DEBUG
-				)
-			);
-
-			$logger->pushProcessor(array($this, 'addDatabaseEntry'));
-			$logger->pushProcessor(new WebProcessor);
-
-			$this->application->getDatabase()->setLogger($logger);
-			$this->application->getDatabase()->setDebug(true);
-		}
 
 		return $this;
 	}
@@ -171,9 +173,7 @@ class TrackerDebugger implements LoggerAwareInterface
 	 */
 	public function addDatabaseEntry($record)
 	{
-		/* @type TrackerApplication $application */
-		// $application = Factory::$application;
-		// $db = $application->getDatabase();
+		// $db = Container::retrieve('db');
 
 		if (false == isset($record['context']))
 		{
@@ -204,7 +204,7 @@ class TrackerDebugger implements LoggerAwareInterface
 					$profile = '';
 		*/
 
-		// $entry->profile = isset($context['profile']) ? $context['profile'] : 'n/a';
+		$entry->profile = isset($context['profile']) ? $context['profile'] : 'n/a';
 
 		$this->log['db'][] = $entry;
 
@@ -245,78 +245,189 @@ class TrackerDebugger implements LoggerAwareInterface
 	 */
 	public function getOutput()
 	{
-		// OK, here comes some very beautiful CSS !!
-		// It's kinda "hidden" here, so evil template designers won't find it :P
-		$css = '
-		<style>
-			pre.dbQuery { background-color: #333; color: white; font-weight: bold; }
-			span.dbgTable { color: yellow; }
-			span.dbgCommand { color: lime; }
-			span.dbgOperator { color: red; }
-			h2.debug { background-color: #333; color: lime; border-radius: 10px; padding: 0.5em; }
-			h3:target { margin-top: 200px;}
-		</style>
-		';
+		$navigation = $this->getNavigation();
 
 		$debug = array();
 
-		$debug[] = $css;
-
-		$debug[] = '<div class="well well-small navbar navbar-fixed-bottom">';
-		$debug[] = '<a class="brand" href="javascript:;">Debug</a>';
-		$debug[] = '<ul class="nav">';
+		// Check if debug is only displayed for admin users
+		if ($this->application->get('debug.admin'))
+		{
+			if (!$this->application->getUser()->isAdmin)
+			{
+				return '';
+			}
+		}
 
 		if ($this->application->get('debug.database'))
 		{
-			$debug[] = '<li><a href="#dbgDatabase">Database</a></li>';
+			$debug[] = '<div id="dbgDatabase">';
+			$debug[] = '<h3>' . g11n3t('Database') . '</h3>';
+
+			$debug[] = $this->renderDatabase();
+			$debug[] = '</div>';
 		}
 
 		if ($this->application->get('debug.system'))
 		{
-			$debug[] = '<li><a href="#dbgProfile">Profile</a></li>';
-			$debug[] = '<li><a href="#dbgUser">User</a></li>';
-			$debug[] = '<li><a href="#dbgProject">Project</a></li>';
+			$debug[] = '<div id="dbgProfile">';
+			$debug[] = '<h3>' . g11n3t('Profile') . '</h3>';
+			$debug[] = $this->renderProfile();
+			$debug[] = '</div>';
+
+			$debug[] = '<div id="dbgUser">';
+			$debug[] = '<h3>' . g11n3t('User') . '</h3>';
+			$debug[] = @Kint::dump($this->application->getSession()->get('user'));
+			$debug[] = '</div>';
+
+			$debug[] = '<div id="dbgProject">';
+			$debug[] = '<h3>' . g11n3t('Project') . '</h3>';
+			$debug[] = @Kint::dump($this->application->getSession()->get('project'));
+			$debug[] = '</div>';
 		}
 
 		if ($this->application->get('debug.language'))
 		{
-			$debug[] = '<li><a href="#dbgLanguageStrings">Lang Strings</a></li>';
-			$debug[] = '<li><a href="#dbgLanguageFiles">Lang Files</a></li>';
+			$debug[] = '<div id="dbgLanguageStrings">';
+			$debug[] = '<h3>' . g11n3t('Language Strings') . '</h3>';
+			$debug[] = $this->renderLanguageStrings();
+			$debug[] = '</div>';
+
+			$debug[] = '<div id="dbgLanguageFiles">';
+			$debug[] = '<h3>' . g11n3t('Language Files') . '</h3>';
+			$debug[] = $this->renderLanguageFiles();
+			$debug[] = '</div>';
 		}
 
-		$debug[] = '</ul>';
-		$debug[] = '</div>';
+		return implode("\n", $navigation) . implode("\n", $debug);
+	}
+
+	/**
+	 * Get the navigation bar.
+	 *
+	 * @return array
+	 *
+	 * @since  1.0
+	 */
+	private function getNavigation()
+	{
+		$navigation = array();
+
+		// OK, here comes some very beautiful CSS !!
+		// It's kinda "hidden" here, so evil template designers won't find it :P
+		$navigation[] = '
+		<style>
+			div#debugBar { background-color: #eee; }
+			div#debugBar a:hover { background-color: #ddd; }
+			div#debugBar a:active { background-color: #ccc; }
+			pre.dbQuery { background-color: #333; color: white; font-weight: bold; }
+			span.dbgTable { color: yellow; }
+			span.dbgCommand { color: lime; }
+			span.dbgOperator { color: red; }
+			div:target { border: 2px dashed orange; padding: 5px; padding-top: 100px; }
+			div:target { transition:all 0.5s ease; }
+		</style>
+		';
+
+		$navigation[] = '<div class="navbar navbar-fixed-bottom" id="debugBar">';
+
+		$navigation[] = '<a class="brand" href="#top" class="hasTooltip" title="' . g11n3t('Go up') . '">'
+			. '&nbsp;<i class="icon icon-joomla"></i></a>';
+
+		$navigation[] = '<ul class="nav">';
 
 		if ($this->application->get('debug.database'))
 		{
-			$debug[] = '<h3><a class="muted" href="javascript:;" name="dbgDatabase">Database</a></h3>';
+			$count = count($this->getLog('db'));
 
-			$debug[] = $this->renderDatabase();
+			$navigation[] = '<li class="hasTooltip"'
+				. ' title="' . sprintf(g11n4t('One database query', '%d database queries', $count), $count) . '">'
+				. '<a href="#dbgDatabase"><i class="icon icon-database"></i> '
+				. $this->getBadge($count)
+				. '</a></li>';
 		}
 
-		$debug[] = '<h3><a class="muted" href="javascript:;" name="dbgProfile">Profile</a></h3>';
-		$debug[] = $this->renderProfile();
+		if ($this->application->get('debug.system'))
+		{
+			$profile = $this->getProfile();
 
-		$session = $this->application->getSession();
-
-		$debug[] = '<h3><a class="muted" href="javascript:;" name="dbgUser">User</a></h3>';
-		$debug[] = @Kint::dump($session->get('user'));
-
-		$debug[] = '<h3><a class="muted" href="javascript:;" name="dbgProject">Project</a></h3>';
-		$debug[] = @Kint::dump($session->get('project'));
+			$navigation[] = '<li class="hasTooltip"'
+				. ' title="' . g11n3t('Profile') . '">'
+				. '<a href="#dbgProfile"><i class="icon icon-lightning"></i> '
+				. sprintf('%s MB', $this->getBadge(number_format($profile->peak / 1000000, 2)))
+				. ' '
+				. sprintf('%s ms', $this->getBadge(number_format($profile->time * 1000)))
+				. '</a></li>';
+		}
 
 		if ($this->application->get('debug.language'))
 		{
-			$debug[] = '<h3><a class="muted" href="javascript:;" name="dbgLanguageStrings">Language Strings</a></h3>';
-			$debug[] = $this->renderLanguageStrings();
+			$info = $this->getLanguageStringsInfo();
+			$badge = $this->getBadge($info->untranslateds, array(1 => 'badge-warning'));
+			$count = count(g11n::getEvents());
 
-			$debug[] = '<h3><a class="muted" href="javascript:;" name="dbgLanguageFiles">Language Files</a></h3>';
-			$debug[] = $this->renderLanguageFiles();
+			$navigation[] = '<li class="hasTooltip"'
+				. ' title="' . sprintf(
+					g11n4t(
+							'One untranslated string of %2$d', '%1$d untranslated strings of %2$d', $info->untranslateds
+						), $info->untranslateds, $info->total
+					) . '">'
+				. '<a href="#dbgLanguageStrings"><i class="icon icon-question-sign"></i>  '
+				. $badge . '/' . $this->getBadge($info->total)
+				. '</a></li>';
+
+			$navigation[] = '<li class="hasTooltip"'
+				. ' title="' . sprintf(g11n4t('One language file loaded', '%d language files loaded', $count), $count) . '">'
+				. '<a href="#dbgLanguageFiles"><i class="icon icon-file-word"></i> '
+				. $this->getBadge($count)
+				. '</a></li>';
 		}
 
-		$debug[] = '</div>';
+		if ($this->application->get('debug.system'))
+		{
+			$user    = $this->application->getSession()->get('user');
+			$project = $this->application->getSession()->get('project');
 
-		return implode("\n", $debug);
+			$title = $project ? $project->title : g11n3t('No Project');
+
+			$navigation[] = '<li class="hasTooltip"'
+				. ' title="' . g11n3t('User') . '">'
+				. '<a href="#dbgUser"><i class="icon icon-user"></i> <span class="badge">'
+				. ($user && $user->username ? $user->username : g11n3t('Guest'))
+				. '</span></a></li>';
+
+			$navigation[] = '<li class="hasTooltip"'
+				. ' title="' . g11n3t('Project') . '">'
+				. '<a href="#dbgProject"><i class="icon icon-cube"></i> <span class="badge">'
+				. $title
+				. '</span></a></li>';
+		}
+
+		$navigation[] = '</ul>';
+		$navigation[] = '</div>';
+
+		return $navigation;
+	}
+
+	/**
+	 * Render the profiler output.
+	 *
+	 * @return  \stdClass
+	 *
+	 * @since   1.0
+	 */
+	private function getProfile()
+	{
+		$points = $this->profiler->getPoints();
+
+		$pointStart = $points[0]->getName();
+		$pointEnd   = $points[count($points) - 1]->getName();
+
+		$profile = new \stdClass;
+
+		$profile->peak = $this->profiler->getMemoryBytesBetween($pointStart, $pointEnd);
+		$profile->time = $this->profiler->getTimeBetween($pointStart, $pointEnd);
+
+		return $profile;
 	}
 
 	/**
@@ -334,20 +445,23 @@ class TrackerDebugger implements LoggerAwareInterface
 	/**
 	 * Render language debug information.
 	 *
-	 * @since  1.0
 	 * @return string
+	 *
+	 * @since  1.0
 	 */
 	public function renderLanguageFiles()
 	{
-		$events = array();
+		$items = array();
 		$tableFormat = new TableFormat;
 
 		foreach (g11n::getEvents() as $e)
 		{
-			$events[] = ArrayHelper::fromObject($e);
+			$items[] = ArrayHelper::fromObject($e);
 		}
 
-		return $tableFormat->fromArray($events);
+		$pluralInfo = sprintf(g11n3t('Plural forms: <code>%1$d</code><br />Plural function: <code>%2$s</code>'), g11n::get('pluralForms'), g11n::get('pluralFunctionRaw'));
+
+		return $tableFormat->fromArray($items) . $pluralInfo;
 	}
 
 	/**
@@ -369,15 +483,12 @@ class TrackerDebugger implements LoggerAwareInterface
 			// Seems that we're recursing...
 			$this->logger->error($exception->getCode() . ' ' . $exception->getMessage(), $context);
 
-			return str_replace(JPATH_BASE, 'JROOT', $exception->getMessage())
+			return str_replace(JPATH_ROOT, 'JROOT', $exception->getMessage())
 			. '<pre>' . $exception->getTraceAsString() . '</pre>'
 			. 'Previous: ' . get_class($exception->getPrevious());
 		}
 
-		$viewClass = '\\JTracker\\View\\TrackerDefaultView';
-
-		/* @type \JTracker\View\TrackerDefaultView $view */
-		$view = new $viewClass;
+		$view = new \JTracker\View\TrackerDefaultView;
 
 		$message = '';
 
@@ -389,7 +500,7 @@ class TrackerDebugger implements LoggerAwareInterface
 		$view->setLayout('exception')
 			->getRenderer()
 			->set('exception', $exception)
-			->set('message', str_replace(JPATH_BASE, 'ROOT', $message));
+			->set('message', str_replace(JPATH_ROOT, 'ROOT', $message));
 
 		$loaded = true;
 
@@ -460,6 +571,8 @@ class TrackerDebugger implements LoggerAwareInterface
 	 * @param   LoggerInterface  $logger  The logger.
 	 *
 	 * @return null
+	 *
+	 * @since   1.0
 	 */
 	public function setLogger(LoggerInterface $logger)
 	{
@@ -469,8 +582,9 @@ class TrackerDebugger implements LoggerAwareInterface
 	/**
 	 * Render database information.
 	 *
-	 * @since  1.0
 	 * @return string
+	 *
+	 * @since  1.0
 	 */
 	protected function renderDatabase()
 	{
@@ -485,9 +599,9 @@ class TrackerDebugger implements LoggerAwareInterface
 
 		$tableFormat = new TableFormat;
 		$sqlFormat   = new SqlFormat;
-		$dbDebugger  = new DatabaseDebugger($this->application->getDatabase());
+		$dbDebugger  = new DatabaseDebugger(Container::retrieve('db'));
 
-		$debug[] = count($dbLog) . ' Queries.';
+		$debug[] = sprintf(g11n4t('One database query', '%d database queries', count($dbLog)), count($dbLog));
 
 		$prefix = $dbDebugger->getPrefix();
 
@@ -496,7 +610,13 @@ class TrackerDebugger implements LoggerAwareInterface
 			$explain = $dbDebugger->getExplain($entry->sql);
 
 			$debug[] = '<pre class="dbQuery">' . $sqlFormat->highlightQuery($entry->sql, $prefix) . '</pre>';
-			$debug[] = sprintf('Query Time: %.3f ms', ($entry->times[1] - $entry->times[0]) * 1000) . '<br />';
+
+			if (isset($entry->times) && is_array($entry->times))
+			{
+				$debug[] = sprintf('Query Time: %.3f ms', ($entry->times[1] - $entry->times[0]) * 1000) . '<br />';
+			}
+
+			// Tabs headers
 
 			$debug[] = '<ul class="nav nav-tabs">';
 
@@ -505,32 +625,43 @@ class TrackerDebugger implements LoggerAwareInterface
 				$debug[] = '<li><a data-toggle="tab" href="#queryExplain-' . $i . '">Explain</a></li>';
 			}
 
-			$debug[] = '<li><a data-toggle="tab" href="#queryTrace-' . $i . '">Trace</a></li>';
+			if (isset($entry->trace) && is_array($entry->trace))
+			{
+				$debug[] = '<li><a data-toggle="tab" href="#queryTrace-' . $i . '">Trace</a></li>';
+			}
 
-			// $debug[] = '<li><a data-toggle="tab" href="#queryProfile-' . $i . '">Profile</a></li>';
+			if (isset($entry->profile) && is_array($entry->profile))
+			{
+				$debug[] = '<li><a data-toggle="tab" href="#queryProfile-' . $i . '">Profile</a></li>';
+			}
 
 			$debug[] = '</ul>';
 
+			// Tabs contents
+
 			$debug[] = '<div class="tab-content">';
 
-			$debug[] = '<div id="queryExplain-' . $i . '" class="tab-pane">';
-
-			$debug[] = $explain;
-			$debug[] = '</div>';
-
-			$debug[] = '<div id="queryTrace-' . $i . '" class="tab-pane">';
-
-			if (is_array($entry->trace))
+			if ($explain)
 			{
-				$debug[] = $tableFormat->fromTrace($entry->trace);
+				$debug[] = '<div id="queryExplain-' . $i . '" class="tab-pane">';
+
+				$debug[] = $explain;
+				$debug[] = '</div>';
 			}
 
-			$debug[] = '</div>';
+			if (isset($entry->trace) && is_array($entry->trace))
+			{
+				$debug[] = '<div id="queryTrace-' . $i . '" class="tab-pane">';
+				$debug[] = $tableFormat->fromTrace($entry->trace);
+				$debug[] = '</div>';
+			}
 
-			// $debug[] = '<div id="queryProfile-' . $i . '" class="tab-pane">';
-
-			// $debug[] = $tableFormat->fromArray($entry->profile);
-			// $debug[] = '</div>';
+			if (isset($entry->profile) && is_array($entry->profile))
+			{
+				$debug[] = '<div id="queryProfile-' . $i . '" class="tab-pane">';
+				$debug[] = $tableFormat->fromArray($entry->profile);
+				$debug[] = '</div>';
+			}
 
 			$debug[] = '</div>';
 		}
@@ -542,6 +673,8 @@ class TrackerDebugger implements LoggerAwareInterface
 	 * Prints out translated and untranslated strings.
 	 *
 	 * @return string
+	 *
+	 * @since   1.0
 	 */
 	protected function renderLanguageStrings()
 	{
@@ -551,7 +684,7 @@ class TrackerDebugger implements LoggerAwareInterface
 
 		$html[] = '<table class="table table-hover table-condensed">';
 		$html[] = '<tr>';
-		$html[] = '<th>String</th><th>File (line)</th><th></th>';
+		$html[] = '<th>' . g11n3t('String') . '</th><th>' . g11n3t('File (line)') . '</th><th></th>';
 		$html[] = '</tr>';
 
 		$tableFormat = new TableFormat;
@@ -580,5 +713,58 @@ class TrackerDebugger implements LoggerAwareInterface
 		$html[] = '</table>';
 
 		return implode("\n", $html);
+	}
+
+	/**
+	 * Get info about processed language strings.
+	 *
+	 * @return \stdClass
+	 *
+	 * @since  1.0
+	 */
+	protected function getLanguageStringsInfo()
+	{
+		$items = g11n::get('processedItems');
+
+		$info = new \stdClass;
+
+		$info->total = count($items);
+		$info->untranslateds = 0;
+
+		foreach ($items as $item)
+		{
+			if ('-' == $item->status)
+			{
+				$info->untranslateds ++;
+			}
+		}
+
+		return $info;
+	}
+
+	/**
+	 * Create a bootstrap HTML badge.
+	 *
+	 * an array with optional css class can be supplied. If the $count value exceeds the option value this class will be used.
+	 * E.g.: [5 => 'warning', 15 => 'danger']
+	 *
+	 * @param   integer  $count    The number to display inside the badge.
+	 * @param   array    $options  An indexed array of values and CSS classes.
+	 *
+	 * @return string
+	 */
+	private function getBadge($count, array $options = array())
+	{
+		$class = '';
+
+		foreach ($options as $opCount => $opClass)
+		{
+			if ($count >= $opCount)
+			{
+				$class = ' ' . $opClass;
+			}
+		}
+
+		return '<span class="badge' . $class . '">' . $count . '</span>';
 	}
 }

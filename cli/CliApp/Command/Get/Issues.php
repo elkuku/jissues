@@ -7,11 +7,12 @@
 namespace CliApp\Command\Get;
 
 use App\Projects\Table\LabelsTable;
-use CliApp\Application\TrackerApplication;
-use Joomla\Date\Date;
-
 use App\Tracker\Table\IssuesTable;
 use App\Tracker\Table\ActivitiesTable;
+
+use Joomla\Date\Date;
+
+use JTracker\Container;
 
 /**
  * Class for retrieving issues from GitHub for selected projects
@@ -23,13 +24,11 @@ class Issues extends Get
 	/**
 	 * Constructor.
 	 *
-	 * @param   TrackerApplication  $application  The application object.
-	 *
 	 * @since   1.0
 	 */
-	public function __construct(TrackerApplication $application)
+	public function __construct()
 	{
-		$this->application = $application;
+		parent::__construct();
 
 		$this->description = 'Retrieve issues from GitHub.';
 
@@ -52,15 +51,13 @@ class Issues extends Get
 	{
 		$this->application->outputTitle('Retrieve Issues');
 
-		$this->selectProject()
+		$this->logOut('Start retrieve Issues')
+			->selectProject()
 			->setupGitHub()
-			->displayGitHubRateLimit();
-
-		// Process the data from GitHub
-		$this->processIssues($this->getData());
-
-		$this->out()
-			->out('Finished');
+			->displayGitHubRateLimit()
+			->processIssues($this->getData())
+			->out()
+			->logOut('Finished');
 	}
 
 	/**
@@ -77,9 +74,9 @@ class Issues extends Get
 		foreach (array('open', 'closed') as $state)
 		{
 			$this->out(sprintf('Retrieving <b>%s</b> items from GitHub...', $state), false);
-			$page = 0;
-
 			$this->debugOut('For: ' . $this->project->gh_user . '/' . $this->project->gh_project);
+
+			$page = 0;
 
 			do
 			{
@@ -133,7 +130,7 @@ class Issues extends Get
 			}
 		);
 
-		$this->out(sprintf('Retrieved <b>%d</b> items from GitHub.', count($issues)));
+		$this->logOut(sprintf('Retrieved <b>%d</b> items from GitHub.', count($issues)));
 
 		return $issues;
 	}
@@ -143,7 +140,7 @@ class Issues extends Get
 	 *
 	 * @param   array  $issues  Array containing the issues pulled from GitHub
 	 *
-	 * @return  void
+	 * @return  $this
 	 *
 	 * @since   1.0
 	 * @throws  \RuntimeException
@@ -151,7 +148,8 @@ class Issues extends Get
 	protected function processIssues($issues)
 	{
 		// Initialize our database object
-		$db    = $this->application->getDatabase();
+		/* @type \Joomla\Database\DatabaseDriver $db */
+		$db = Container::getInstance()->get('db');
 		$query = $db->getQuery(true);
 		$added = 0;
 
@@ -266,12 +264,14 @@ class Issues extends Get
 			}
 
 			// Store was successful, update status
-			$added++;
+			++ $added;
 		}
 
 		// Output the final result
 		$this->out()
-			->out(sprintf('<ok>Added %d items to the tracker.</ok>', $added));
+			->logOut(sprintf('<ok>Added %d items to the tracker.</ok>', $added));
+
+		return $this;
 	}
 
 	/**
@@ -287,15 +287,16 @@ class Issues extends Get
 
 		if (!$labels)
 		{
-			$db = $this->application->getDatabase();
+			/* @type \Joomla\Database\DatabaseDriver $db */
+			$db = Container::getInstance()->get('db');
 
 			$table = new LabelsTable($db);
 
 			$labelList = $db ->setQuery(
 				$db->getQuery(true)
-			->from($db->quoteName($table->getTableName()))
-			->select(array('label_id', 'name'))
-			->where($db->quoteName('project_id') . ' = ' . $this->project->project_id)
+				->from($db->quoteName($table->getTableName()))
+				->select(array('label_id', 'name'))
+				->where($db->quoteName('project_id') . ' = ' . $this->project->project_id)
 			)->loadObjectList();
 
 			foreach ($labelList as $labelObject)

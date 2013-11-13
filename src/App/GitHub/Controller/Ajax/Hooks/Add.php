@@ -1,6 +1,6 @@
 <?php
 /**
- * @package    JTracker\Components\Users
+ * Part of the Joomla Tracker's GitHub Application
  *
  * @copyright  Copyright (C) 2012 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -9,20 +9,21 @@
 namespace App\GitHub\Controller\Ajax\Hooks;
 
 use JTracker\Controller\AbstractAjaxController;
+use JTracker\Container;
 
 /**
- * Default controller class for the Users component.
+ * Controller class to add new webhooks to the GitHub repository.
  *
- * @package  JTracker\Components\Users
- * @since    1.0
+ * @since  1.0
  */
 class Add extends AbstractAjaxController
 {
 	/**
 	 * Prepare the response.
 	 *
-	 * @since  1.0
-	 * @return void
+	 * @return  void
+	 *
+	 * @since   1.0
 	 */
 	protected function prepareResponse()
 	{
@@ -32,7 +33,9 @@ class Add extends AbstractAjaxController
 		$events = $this->getInput()->getHtml('events');
 
 		$project = $this->getApplication()->getProject();
-		$gitHub  = $this->getApplication()->getGitHub();
+
+		/* @type \Joomla\Github\Github $github */
+		$github = Container::retrieve('gitHub');
 
 		$name   = 'web';
 		$active = 1;

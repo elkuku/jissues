@@ -1,5 +1,7 @@
 <?php
 /**
+ * Part of the Joomla Tracker's Tracker Application
+ *
  * @copyright  Copyright (C) 2012 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -7,15 +9,13 @@
 namespace App\Tracker\Controller\Issue;
 
 use Joomla\Application\AbstractApplication;
-use Joomla\Factory;
 use Joomla\Input\Input;
 
 use App\Tracker\Model\IssueModel;
-use App\Tracker\ValidationException;
 use JTracker\Controller\AbstractTrackerController;
 
 /**
- * Controller class to add an item via the tracker component.
+ * Controller class to save an item via the tracker component.
  *
  * @since  1.0
  */
@@ -46,6 +46,8 @@ class SaveController extends AbstractTrackerController
 	 */
 	public function execute()
 	{
+		$application = $this->getApplication();
+
 		$src = $this->getInput()->get('item', array(), 'array');
 
 		try
@@ -53,22 +55,31 @@ class SaveController extends AbstractTrackerController
 			$model = new IssueModel;
 			$model->save($src);
 
-			$this->getApplication()->redirect(
-				'/tracker/' . $this->getApplication()->input->get('project_alias')
+			$application->enqueueMessage('The changes have been saved.', 'success');
+
+			$application->redirect(
+				$application->get('uri.base.path')
+				. '/tracker/' . $application->input->get('project_alias') . '/' . $src['id']
 			);
 		}
-		catch (ValidationException $e)
+		catch (\Exception $e)
 		{
-			echo $e->getMessage();
+			$application->enqueueMessage($e->getMessage(), 'error');
 
-			var_dump($e->getErrors());
-
-			exit(255);
-
-			// @todo move on to somewhere =;)
-
-			// $this->getInput()->set('view', 'issue');
-			// $this->getInput()->set('layout', 'edit');
+			if (!empty($src['id']))
+			{
+				$application->redirect(
+					$application->get('uri.base.path')
+					. 'tracker/' . $application->input->get('project_alias') . '/' . $src['id'] . '/edit'
+				);
+			}
+			else
+			{
+				$application->redirect(
+					$application->get('uri.base.path')
+					. 'tracker/' . $application->input->get('project_alias')
+				);
+			}
 		}
 
 		parent::execute();

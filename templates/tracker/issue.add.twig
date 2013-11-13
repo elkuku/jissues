@@ -3,71 +3,67 @@
 
 {% extends "index.twig" %}
 
-{% block title %}{{ project.title }} - New Item{% endblock %}
+{% block title %}{{ project.title }} - {{ translate('New Item') }}{% endblock %}
 
 {% block headerText %}{{ project.title }}{% endblock %}
 
 {% block prependMenu %}
     <li id="issueResult">
-        <a class="btn-success" href="javascript:"
-           onclick="JTracker.submitIssue('#issueResult', '#issueDebug');">
-            Submit
-        </a>
+        <a class="btn-success" href="javascript:" id="submit">{{ translate('Submit') }}</a>
     </li>
     {{ parent() }}
 {% endblock %}
 
 {% block headerCSS %}
     {{ parent() }}
-    <link href="{{ uri.base.path }}bootstrap-switch/static/stylesheets/bootstrapSwitch.css" rel="stylesheet" media="screen">
-    <link href="{{ uri.base.path }}css/markitup/skins/markitup/style.css" rel="stylesheet" />
-    <link href="{{ uri.base.path }}css/markitup/sets/markdown/style.css" rel="stylesheet" />
+    <link href="{{ uri.base.path }}vendor/bootstrap-switch/static/stylesheets/bootstrap-switch.css" rel="stylesheet" media="screen">
+    <link href="{{ uri.base.path }}jtracker/markitup/skins/markitup/style.css" rel="stylesheet" />
+    <link href="{{ uri.base.path }}jtracker/markitup/sets/markdown/style.css" rel="stylesheet" />
 {% endblock %}
 
 {% block content %}
+    <form method="post" action="/{{ uri.route }}-submit" name="editForm" id="issueForm">
 
-    <div id="issueDebug"></div>
+        <div class="pull-right well well-small" style="margin-left: 15px">
 
-    <form name="editForm">
-
-        <div class="pull-right well well-small">
-
-            <label for="viewMode" class="btn btn-small">View Mode</label>
+            <label for="viewMode" class="btn btn-small">{{ translate('View Mode') }}</label>
             <br />
-            <div class="switch switch-large" id="helpSwitch"
-                 data-on-label="Help" data-off-label="Pro"
+            <div class="make-switch switch-large" id="helpSwitch"
+                 data-on-label="{{ translate('Help') }}" data-off-label="{{ translate('Pro') }}"
                  data-on="success" data-off="info">
                 <input id="viewMode" type="checkbox" {{ user.check("manage") ? "" : " checked='checked'" }} />
             </div>
 
             <div class="divider">-</div>
 
-            <label for="priority">Priority</label>
-            <select name="item[priority]" id="priority" class="span2">
-                {% for i in range(1, 4) %}
+            <label for="priority">{{ translate('Priority') }}</label>
+            <select name="item[priority]" id="priority" class="span2" >
+                {% for i in range(1, 5) %}
                     <option {{ i == item.priority ? "selected='selected'" : ""  }} value="{{ i }}">{{ i }}</option>
                 {% endfor %}
             </select>
 
-            <div class="helpText alert alert-info">help priority...</div>
+            <div class="helpText span2 alert alert-info">
+                {{ translate('Priority help')|raw }}
+            </div>
 
+            <label for="build">{{ translate('Build') }}</label>
+            <input class="validateBuild" name="build" id="build" type="text" class="span2" />
+
+            <div class="helpText span2 alert alert-info">{{ translate('Build help') }}</div>
         </div>
 
-        <h2>New Item</h2>
+        <h2>{{ translate('New Item') }}</h2>
 
-        <div class="helpText alert alert-info">help intro...</div>
-
-        {% if(user.username) %}
-            {{ avatar(user.username, 100)|raw }}
-        {% endif %}
+        <div class="helpText span6 alert alert-info">{{ translate('Issue intro help') }}</div>
 
         <fieldset>
-            <label for="title">Title</label>
-            <input type="text" name="title" style="width: 80%; font-size: 1.3em;"/>
+            <label for="title">{{ translate('Title') }}</label>
+            <input class="validateTitle" type="text" name="title" id="title" style="width: 80%; font-size: 1.2em;" />
 
-            <div class="helpText alert alert-info">help title...</div>
+            <div class="helpText span6 alert alert-info">{{ translate('Issue title help') }}</div>
 
-            <label for="description">Description</label>
+            <label for="description">{{ translate('Description') }}</label>
 
             {% set editorId="description" %}
             {% set editorName="body" %}
@@ -76,8 +72,7 @@
 
             {% include "editor.twig" %}
 
-            <div class="helpText alert alert-info">help description...</div>
-
+            <div class="helpText span6 alert alert-info">{{ translate('Issue description help') }}</div>
         </fieldset>
     </form>
 {% endblock %}
@@ -85,9 +80,12 @@
 {% block JavaScriptBottom %}
 
     {{ parent() }}
-    <script type="text/javascript" src="{{ uri.base.path }}js/markitup/jquery.markitup.js"></script>
-    <script type="text/javascript" src="{{ uri.base.path }}js/markitup/sets/markdown/set.js"></script>
-    <script type="text/javascript" src="{{ uri.base.path }}bootstrap-switch/static/js/bootstrapSwitch.js"></script>
+    <script type="text/javascript" src="{{ uri.base.path }}vendor/markitup/markitup/jquery.markitup.js"></script>
+    <script type="text/javascript" src="{{ uri.base.path }}jtracker/markitup/sets/markdown/set.js"></script>
+    <script type="text/javascript" src="{{ uri.base.path }}vendor/bootstrap-switch/static/js/bootstrap-switch.js"></script>
+    <script type="text/javascript" src="{{ uri.base.path }}vendor/jquery-validation/jquery.validate.js"></script>
+    <script type="text/javascript" src="{{ uri.base.path }}vendor/jquery-validation/localization/messages_{{ lang|split('-')[0] }}.js"></script>
+    <script type="text/javascript" src="{{ uri.base.path }}jtracker/jquery-validation/jtracker-rules.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -110,6 +108,16 @@
             if('#preview' == $(e.target).attr('href')) {
                 JTracker.preview('#description', '#preview');
             }
+        });
+
+        // Validate and submit form
+        var form = $('#issueForm');
+        form.validate();
+        $('#submit').click(function() {
+            if (form.valid()) {
+                $('#submit').html('Submitting...');
+            }
+            form.submit();
         });
     </script>
 {% endblock %}

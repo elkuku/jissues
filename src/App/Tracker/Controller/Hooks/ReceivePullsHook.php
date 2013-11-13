@@ -1,6 +1,8 @@
 <?php
 /**
- * @copyright  Copyright (C) 2013 - 2013 Open Source Matters, Inc. All rights reserved.
+ * Part of the Joomla Tracker's Tracker Application
+ *
+ * @copyright  Copyright (C) 2012 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -10,9 +12,10 @@ use Joomla\Date\Date;
 
 use App\Tracker\Controller\AbstractHookController;
 use App\Tracker\Table\IssuesTable;
+use JTracker\Authentication\GitHub\GitHubLoginHelper;
 
 /**
- * Controller class receive and inject issue reports from GitHub.
+ * Controller class receive and inject pull requests from GitHub.
  *
  *        >>>             !!!   N O T E   !!!                      <<<<<<<<<<<<<<<<<<<   !
  *                        ___________________
@@ -86,8 +89,6 @@ class ReceivePullsHook extends AbstractHookController
 	 */
 	protected function insertData()
 	{
-		$table = new IssuesTable($this->db);
-
 		// Figure out the state based on the action
 		$action = $this->hookData->action;
 
@@ -111,55 +112,63 @@ class ReceivePullsHook extends AbstractHookController
 
 		// Prepare the dates for insertion to the database
 		$dateFormat = $this->db->getDateFormat();
-		$opened = new Date($this->data->created_at);
+		$opened     = new Date($this->data->created_at);
 		$modified   = new Date($this->data->updated_at);
 
-		$table->title         = $this->data->title;
-		$table->description   = $parsedText;
-		$table->issue_number  = $this->data->number;
-		$table->project_id    = $this->project->project_id;
-		$table->status        = $status;
-		$table->opened_date   = $opened->format($dateFormat);
-		$table->opened_by     = $this->data->user->login;
-		$table->modified_date = $modified->format($dateFormat);
-
-		// If pull request
-		$table->has_code = 1;
+		$data = array();
+		$data['issue_number']    = $this->data->number;
+		$data['title']           = $this->data->title;
+		$data['description']     = $parsedText;
+		$data['description_raw'] = $this->data->body;
+		$data['status']          = $status;
+		$data['opened_date']     = $opened->format($dateFormat);
+		$data['opened_by']       = $this->data->user->login;
+		$data['modified_date']   = $modified->format($dateFormat);
+		$data['project_id']      = $this->project->project_id;
+		$data['has_code']        = 1;
+		$data['build']           = $this->data->base->ref;
 
 		// Add the closed date if the status is closed
 		if ($this->data->closed_at)
 		{
 			$closed = new Date($this->data->closed_at);
-			$table->closed_date = $closed->format($dateFormat);
-			$table->closed_by   = $this->data->user->login;
+			$data['closed_date'] = $closed->format($dateFormat);
+			$data['closed_by']   = $this->hookData->sender->login;
 		}
 
 		// If the title has a [# in it, assume it's a Joomlacode Tracker ID
 		if (preg_match('/\[#([0-9]+)\]/', $this->data->title, $matches))
 		{
-			$table->foreign_number = $matches[1];
+			$data['foreign_number'] = $matches[1];
 		}
+
+		// Process labels for the item
+		$data['labels'] = $this->processLabels($this->data->number);
 
 		try
 		{
-			$table->store();
+			$table = new IssuesTable($this->db);
+			$table->save($data);
 		}
 		catch (\Exception $e)
 		{
-			$this->logger->error(sprintf('Error storing new item %s in the database: %s', $this->data->number, $e->getMessage()));
+			$this->logger->error(
+				sprintf(
+					'Error adding GitHub pull request %s/%s #%d to the tracker: %s',
+					$this->project->gh_user,
+					$this->project->gh_project,
+					$this->data->number,
+					$e->getMessage()
+				)
+			);
+
 			$this->getApplication()->close();
 		}
 
-		// Add an open record to the activity table
-		if ('opened' == $action)
+		// Pull the user's avatar if it does not exist
+		if (!file_exists(JPATH_THEMES . '/images/avatars/' . $this->data->user->login . '.png'))
 		{
-			$this->addActivityEvent(
-				'open',
-				$table->opened_date,
-				$this->data->user->login,
-				$this->project->project_id,
-				$this->data->number
-			);
+			GitHubLoginHelper::saveAvatar($this->data->user->login);
 		}
 
 		// Add a reopen record to the activity table if the action is reopened
@@ -167,8 +176,8 @@ class ReceivePullsHook extends AbstractHookController
 		{
 			$this->addActivityEvent(
 				'reopen',
-				$table->modified_date,
-				$this->data->user->login,
+				$data['modified_date'],
+				$this->hookData->sender->login,
 				$this->project->project_id,
 				$this->data->number
 			);
@@ -179,8 +188,8 @@ class ReceivePullsHook extends AbstractHookController
 		{
 			$this->addActivityEvent(
 				'close',
-				$table->closed_date,
-				$this->data->user->login,
+				$data['closed_date'],
+				$this->hookData->sender->login,
 				$this->project->project_id,
 				$this->data->number
 			);
@@ -189,12 +198,97 @@ class ReceivePullsHook extends AbstractHookController
 		// Store was successful, update status
 		$this->logger->info(
 			sprintf(
-				'Added GitHub issue %s/%s #%d to the tracker.',
+				'Added GitHub pull request %s/%s #%d to the tracker.',
 				$this->project->gh_user,
 				$this->project->gh_project,
 				$this->data->number
 			)
 		);
+
+		// For joomla/joomla-cms, add PR-<branch> label
+		if ($action == 'opened' && $this->project->gh_user == 'joomla' && $this->project->gh_project == 'joomla-cms')
+		{
+			// Set some data
+			$issueLabel = 'PR-' . $this->data->base->ref;
+			$labelSet   = false;
+
+			// Get the labels for the pull's issue
+			try
+			{
+				$labels = $this->github->issues->get($this->project->gh_user, $this->project->gh_project, $this->data->number)->labels;
+			}
+			catch (\DomainException $e)
+			{
+				$this->logger->error(
+					sprintf(
+						'Error retrieving labels for GitHub item %s/%s #%d - %s',
+						$this->project->gh_user,
+						$this->project->gh_project,
+						$this->data->number,
+						$e->getMessage()
+					)
+				);
+
+				$this->getApplication()->close();
+			}
+
+			// Check if the PR- label present
+			if (count($labels) > 0)
+			{
+				foreach ($labels as $label)
+				{
+					if (!$labelSet && $label->name == $issueLabel)
+					{
+						$this->logger->info(
+							sprintf(
+								'GitHub item %s/%s #%d already has the %s label.',
+								$this->project->gh_user,
+								$this->project->gh_project,
+								$this->data->number,
+								$issueLabel
+							)
+						);
+
+						$labelSet = true;
+					}
+				}
+			}
+
+			// Add the label if we need to
+			if (!$labelSet)
+			{
+				try
+				{
+					$this->github->issues->labels->add(
+						$this->project->gh_user, $this->project->gh_project, $this->data->number, array($issueLabel)
+					);
+
+					// Post the new label on the object
+					$this->logger->info(
+						sprintf(
+							'Added %s label to %s/%s #%d',
+							$issueLabel,
+							$this->project->gh_user,
+							$this->project->gh_project,
+							$this->data->number
+						)
+					);
+				}
+				catch (\DomainException $e)
+				{
+					$this->logger->error(
+						sprintf(
+							'Error adding the %s label to GitHub pull request %s/%s #%d - %s',
+							$issueLabel,
+							$this->project->gh_user,
+							$this->project->gh_project,
+							$this->data->number,
+							$e->getMessage()
+						)
+					);
+				}
+			}
+		}
 
 		return true;
 	}
@@ -220,8 +314,6 @@ class ReceivePullsHook extends AbstractHookController
 			case 'opened':
 				// Issues: reopened
 			case 'reopened' :
-				// Pulls: synchronized
-			case 'synchronized' :
 			default:
 				$status = 1;
 				break;
@@ -234,34 +326,43 @@ class ReceivePullsHook extends AbstractHookController
 		$dateFormat = $this->db->getDateFormat();
 		$modified   = new Date($this->data->updated_at);
 
-		$closed = null;
-
 		// Only update fields that may have changed, there's no API endpoint to show that so make some guesses
-		$query = $this->db->getQuery(true);
-		$query->update($this->db->quoteName('#__issues'));
-		$query->set($this->db->quoteName('title') . ' = ' . $this->db->quote($this->data->title));
-		$query->set($this->db->quoteName('description') . ' = ' . $this->db->quote($parsedText));
-		$query->set($this->db->quoteName('description_raw') . ' = ' . $this->db->quote($this->data->body));
-		$query->set($this->db->quoteName('status') . ' = ' . $status);
-		$query->set($this->db->quoteName('modified_date') . ' = ' . $this->db->quote($modified->format($dateFormat)));
-		$query->where($this->db->quoteName('issue_number') . ' = ' . $this->data->number);
-		$query->where($this->db->quoteName('project_id') . ' = ' . $this->project->project_id);
+		$data = array();
+		$data['title']           = $this->data->title;
+		$data['description']     = $parsedText;
+		$data['description_raw'] = $this->data->body;
+		$data['status']          = $status;
+		$data['modified_date']   = $modified->format($dateFormat);
+		$data['modified_by']     = $this->hookData->sender->login;
 
 		// Add the closed date if the status is closed
 		if ($this->data->closed_at)
 		{
 			$closed = new Date($this->data->closed_at);
-			$query->set($this->db->quoteName('closed_date') . ' = ' . $this->db->quote($closed->format($dateFormat)));
+			$data['closed_date'] = $closed->format($dateFormat);
 		}
+
+		// Process labels for the item
+		$data['labels'] = $this->processLabels($this->data->number);
 
 		try
 		{
-			$this->db->setQuery($query)
-				->execute();
+			$table = new IssuesTable($this->db);
+			$table->load(array('issue_number' => $this->data->number, 'project_id' => $this->project->project_id));
+			$table->save($data);
 		}
-		catch (\RuntimeException $e)
+		catch (\Exception $e)
 		{
-			$this->logger->error('Error updating the database:' . $e->getMessage());
+			$this->logger->error(
+				sprintf(
+					'Error updating GitHub pull request %s/%s #%d to the tracker: %s',
+					$this->project->gh_user,
+					$this->project->gh_project,
+					$this->data->number,
+					$e->getMessage()
+				)
+			);
+
 			$this->getApplication()->close();
 		}
 
@@ -271,19 +372,19 @@ class ReceivePullsHook extends AbstractHookController
 			$this->addActivityEvent(
 				'reopen',
 				$this->data->updated_at,
-				$this->data->user->login,
+				$this->hookData->sender->login,
 				$this->project->project_id,
 				$this->data->number
 			);
 		}
 
 		// Add a synchronize record to the activity table if the action is synchronized
-		if ($action == 'synchronized')
+		if ($action == 'synchronize')
 		{
 			$this->addActivityEvent(
 				'synchronize',
 				$this->data->updated_at,
-				$this->data->user->login,
+				$this->hookData->sender->login,
 				$this->project->project_id,
 				$this->data->number
 			);
@@ -295,7 +396,7 @@ class ReceivePullsHook extends AbstractHookController
 			$this->addActivityEvent(
 				'close',
 				$this->data->closed_at,
-				$this->data->user->login,
+				$this->hookData->sender->login,
 				$this->project->project_id,
 				$this->data->number
 			);
@@ -304,7 +405,7 @@ class ReceivePullsHook extends AbstractHookController
 		// Store was successful, update status
 		$this->logger->info(
 			sprintf(
-				'Updated GitHub comment %s/%s #%d to the tracker.',
+				'Updated GitHub pull request %s/%s #%d to the tracker.',
 				$this->project->gh_user,
 				$this->project->gh_project,
 				$this->data->number

@@ -12,13 +12,13 @@ namespace CliApp\Command\Get;
 use App\Projects\Model\ProjectsModel;
 use App\Projects\Table\ProjectsTable;
 
-use Joomla\Github\Github;
-use Joomla\Registry\Registry;
-
-use CliApp\Application\TrackerApplication;
 use CliApp\Command\TrackerCommand;
 use CliApp\Command\TrackerCommandOption;
 use CliApp\Exception\AbortException;
+
+use Joomla\Github\Github;
+
+use JTracker\Container;
 
 /**
  * Class for retrieving data from GitHub for selected projects
@@ -60,13 +60,11 @@ class Get extends TrackerCommand
 	/**
 	 * Constructor.
 	 *
-	 * @param   TrackerApplication  $application  The application object.
-	 *
 	 * @since   1.0
 	 */
-	public function __construct(TrackerApplication $application)
+	public function __construct()
 	{
-		parent::__construct($application);
+		parent::__construct();
 
 		$this->description = 'Retrieve <cmd><issues></cmd>, <cmd><comments></cmd> or <cmd><avatars></cmd>.';
 
@@ -100,13 +98,17 @@ class Get extends TrackerCommand
 	 */
 	public function execute()
 	{
-		$this->application->outputTitle('Retrieve');
+		$this->application->outputTitle('Get');
 
-		$this->out('<error>                                    </error>');
-		$this->out('<error>  Please use one of the following:  </error>');
-		$this->out('<error>  retrieve comments                 </error>');
-		$this->out('<error>  retrieve issues                   </error>');
-		$this->out('<error>                                    </error>');
+		$this
+			->out('<error>                                    </error>')
+			->out('<error>  Please use one of the following:  </error>')
+			->out('<error>                                    </error>')
+			->out('<error>  get project                       </error>')
+			->out('<error>  get issues                        </error>')
+			->out('<error>  get comments                      </error>')
+			->out('<error>  get avatars                       </error>')
+			->out('<error>                                    </error>');
 	}
 
 	/**
@@ -121,7 +123,7 @@ class Get extends TrackerCommand
 	 */
 	protected function selectProject()
 	{
-		$projects = with(new ProjectsModel($this->application->getDatabase()))->getItems();
+		$projects = with(new ProjectsModel(Container::getInstance()->get('db')))->getItems();
 
 		$id = $this->application->input->getInt('project', $this->application->input->getInt('p'));
 
@@ -178,9 +180,9 @@ class Get extends TrackerCommand
 			{
 				throw new AbortException('Invalid project');
 			}
-
-			$this->out('Processing project: <info>' . $this->project->title . '</info>');
 		}
+
+		$this->logOut('Processing project: <info>' . $this->project->title . '</info>');
 
 		return $this;
 	}
@@ -195,7 +197,7 @@ class Get extends TrackerCommand
 	 */
 	protected function setupGitHub()
 	{
-		$this->github = $this->application->getGitHub();
+		$this->github = Container::retrieve('gitHub');
 
 		return $this;
 	}

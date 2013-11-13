@@ -9,22 +9,31 @@
 
 namespace CliApp\Command;
 
-use Joomla\Database\DatabaseDriver;
+use JTracker\Container;
 
-use CliApp\Application\TrackerApplication;
+use Monolog\Logger;
+
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * TrackerCommand class
  *
  * @since  1.0
  */
-abstract class TrackerCommand
+abstract class TrackerCommand implements LoggerAwareInterface
 {
 	/**
-	 * @var    TrackerApplication
+	 * @var    \CliApp\Application\CliApplication
 	 * @since  1.0
 	 */
 	protected $application;
+
+	/**
+	 * @var    Logger
+	 * @since  1.0
+	 */
+	protected $logger;
 
 	/**
 	 * @var    array
@@ -43,13 +52,12 @@ abstract class TrackerCommand
 	/**
 	 * Constructor.
 	 *
-	 * @param   TrackerApplication  $application  The application object.
-	 *
 	 * @since   1.0
 	 */
-	public function __construct(TrackerApplication $application)
+	public function __construct()
 	{
-		$this->application = $application;
+		$this->application = Container::retrieve('app');
+		$this->logger      = Container::retrieve('logger');
 	}
 
 	/**
@@ -95,7 +103,7 @@ abstract class TrackerCommand
 	 * @param   string   $text  The text to display.
 	 * @param   boolean  $nl    True (default) to append a new line at the end of the output string.
 	 *
-	 * @return  TrackerCommand
+	 * @return  $this
 	 *
 	 * @codeCoverageIgnore
 	 * @since   1.0
@@ -112,7 +120,7 @@ abstract class TrackerCommand
 	 *
 	 * @param   string  $text  The text to display.
 	 *
-	 * @return  TrackerApplication
+	 * @return  $this
 	 *
 	 * @since   1.0
 	 */
@@ -121,5 +129,46 @@ abstract class TrackerCommand
 		$this->application->debugOut($text);
 
 		return $this;
+	}
+
+	/**
+	 * Pass a string to the attached logger.
+	 *
+	 * @param   string  $text  The text to display.
+	 *
+	 * @return  $this
+	 *
+	 * @since   1.0
+	 */
+	protected function logOut($text)
+	{
+		// Send text to the logger and remove color chars.
+		$this->logger->info(preg_replace('/\<[a-z\/]+\>/', '', $text));
+
+		return $this;
+	}
+
+	/**
+	 * Write a string to the standard output if an operation has terminated successfully.
+	 *
+	 * @return $this
+	 *
+	 * @since   1.0
+	 */
+	protected function outOK()
+	{
+		return $this->out('<ok>ok</ok>');
+	}
+
+	/**
+	 * Sets a logger instance on the object
+	 *
+	 * @param   LoggerInterface  $logger  The logger interface
+	 *
+	 * @return null
+	 */
+	public function setLogger(LoggerInterface $logger)
+	{
+		$this->logger = $logger;
 	}
 }

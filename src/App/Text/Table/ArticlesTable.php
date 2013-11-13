@@ -1,16 +1,18 @@
 <?php
 /**
- * @copyright  Copyright (C) 2013 - 2013 Open Source Matters, Inc. All rights reserved.
+ * Part of the Joomla Tracker's Text Application
+ *
+ * @copyright  Copyright (C) 2012 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 namespace App\Text\Table;
 
 use Joomla\Database\DatabaseDriver;
-
-use Joomla\Factory;
 use Joomla\Filter\OutputFilter;
+
 use JTracker\Database\AbstractDatabaseTable;
+use JTracker\Container;
 
 /**
  * Table interface class for the #__articles table
@@ -43,8 +45,9 @@ class ArticlesTable extends AbstractDatabaseTable
 	 *
 	 * @param   string  $alias  The alias.
 	 *
-	 * @since  1.0
-	 * @return mixed
+	 * @return  ArticlesTable
+	 *
+	 * @since   1.0
 	 */
 	public function loadByAlias($alias)
 	{
@@ -57,9 +60,10 @@ class ArticlesTable extends AbstractDatabaseTable
 	}
 
 	/**
-	 * Overloaded check function.
+	 * Method to perform sanity checks on the AbstractDatabaseTable instance properties to ensure
+	 * they are safe to store in the database.
 	 *
-	 * @return  boolean
+	 * @return  $this  Method allows chaining
 	 *
 	 * @since   1.0
 	 * @throws  \InvalidArgumentException
@@ -76,13 +80,13 @@ class ArticlesTable extends AbstractDatabaseTable
 			}
 			else
 			{
-				$errors[] = 'An alias or a title is required.';
+				$errors[] = g11n3t('An alias or a title is required.');
 			}
 		}
 
 		if (trim($this->text_md) == '')
 		{
-			$errors[] = 'Some text is required.';
+			$errors[] = g11n3t('Some text is required.');
 		}
 
 		$this->alias = OutputFilter::stringURLSafe($this->alias);
@@ -97,7 +101,6 @@ class ArticlesTable extends AbstractDatabaseTable
 
 	/**
 	 * Method to store a row in the database from the AbstractDatabaseTable instance properties.
-	 *
 	 * If a primary key value is set the row with that primary key value will be
 	 * updated with the instance property values.  If no primary key value is set
 	 * a new row will be inserted into the database with the properties from the
@@ -105,7 +108,7 @@ class ArticlesTable extends AbstractDatabaseTable
 	 *
 	 * @param   boolean  $updateNulls  True to update fields even if they are null.
 	 *
-	 * @return  ArticlesTable
+	 * @return  $this  Method allows chaining
 	 *
 	 * @since   1.0
 	 */
@@ -113,20 +116,16 @@ class ArticlesTable extends AbstractDatabaseTable
 	{
 		if (!$this->created_date)
 		{
-			// New item
-			if (!$this->created_date)
-			{
-				$date               = new \DateTime;
-				$this->created_date = $date->format('Y-m-d H:i:s');
-			}
+			// New item - set an (arbitrary) created date..
+			$this->created_date = with(new \DateTime)->format('Y-m-d H:i:s');
 		}
 
-		/* @type \JTracker\Application\TrackerApplication $application */
-		$application = Factory::$application;
+		/* @type \Joomla\Github\Github $gitHub */
+		$gitHub = Container::retrieve('gitHub');
 
 		// Render markdown
-		$this->text = $application->getGitHub()
-			->markdown->render($this->text_md);
+		$this->text = $gitHub->markdown
+			->render($this->text_md);
 
 		return parent::store($updateNulls);
 	}

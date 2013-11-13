@@ -8,11 +8,13 @@
 
 namespace JTracker\Authentication\GitHub;
 
-use Joomla\Factory;
+use Joomla\Date\Date;
 use Joomla\Http\Http;
 use Joomla\Http\HttpFactory;
 use Joomla\Registry\Registry;
 use Joomla\Uri\Uri;
+
+use JTracker\Container;
 
 /**
  * Helper class for logging into the application via GitHub.
@@ -60,8 +62,8 @@ class GitHubLoginHelper
 	 */
 	public function getLoginUri()
 	{
-		/* @type \JTracker\Application\TrackerApplication $application */
-		$application = Factory::$application;
+		/* @type \JTracker\Application $application */
+		$application = Container::retrieve('app');
 
 		$redirect = $application->get('uri.base.full') . 'login';
 
@@ -92,14 +94,9 @@ class GitHubLoginHelper
 	 */
 	public function requestToken($code)
 	{
-		// @todo temporary fix to avoid the "Socket" transport protocol - ADD: and the "stream"...
+		// GitHub API works best with cURL
 		$options = new Registry;
 		$transport = HttpFactory::getAvailableDriver($options, array('curl'));
-
-		if (false == is_a($transport, 'Joomla\\Http\\Transport\\Curl'))
-		{
-			throw new \RuntimeException('Please enable cURL.');
-		}
 
 		$http = new Http($options, $transport);
 
@@ -154,39 +151,54 @@ class GitHubLoginHelper
 	 *
 	 * NOTE: A redirect is expected while fetching the avatar.
 	 *
-	 * @param   GithubUser  $user  The user object.
+	 * @param   string  $username  The username to retrieve the avatar for.
 	 *
-	 * @return  void
+	 * @return  integer  The function returns the number of bytes that were written to the file, or false on failure.
 	 *
 	 * @since   1.0
 	 * @throws  \RuntimeException
+	 * @throws  \DomainException
 	 */
-	public static function saveAvatar(GithubUser $user)
+	public static function saveAvatar($username)
 	{
-		$path = JPATH_THEMES . '/images/avatars/' . $user->username . '.png';
+		$path = JPATH_THEMES . '/images/avatars/' . $username . '.png';
 
-		if (false == file_exists($path))
+		if (file_exists($path))
 		{
-			if (false == function_exists('curl_setopt'))
-			{
-				throw new \RuntimeException('cURL is not installed - no avatar support ;(');
-			}
-
-			$ch = curl_init($user->avatar_url);
-
-			curl_setopt($ch, CURLOPT_HEADER, false);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
-			$data = curl_exec($ch);
-
-			curl_close($ch);
-
-			if ($data)
-			{
-				file_put_contents($path, $data);
-			}
+			return 1;
 		}
+
+		if (false == function_exists('curl_setopt'))
+		{
+			throw new \RuntimeException('cURL is not installed - no avatar support.');
+		}
+
+		/* @type \Joomla\Github\Github $github */
+		$github = Container::retrieve('gitHub');
+
+		$ch = curl_init($github->users->get($username)->avatar_url);
+
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+		$data = curl_exec($ch);
+
+		curl_close($ch);
+
+		if (!$data)
+		{
+			throw new \DomainException(sprintf('Can not retrieve the avatar for user %s', $username));
+		}
+
+		$result = file_put_contents($path, $data);
+
+		if (false == $result)
+		{
+			throw new \RuntimeException(sprintf('Can not write the avatar image to file %s', $path));
+		}
+
+		return $result;
 	}
 
 	/**
@@ -214,5 +226,29 @@ class GitHubLoginHelper
 		$avatars[$user->username] = file_exists($avatar) ? $avatar : $base . '/user-default.png';
 
 		return $avatars[$user->username];
+	}
+
+	/**
+	 * Set the last visited time for a newly logged in user
+	 *
+	 * @param   integer  $id  The user ID to update
+	 *
+	 * @return  void
+	 *
+	 * @since   1.0
+	 */
+	public static function setLastVisitTime($id)
+	{
+		/* @type \Joomla\Database\DatabaseDriver $db */
+		$db = Container::retrieve('db');
+
+		$date = new Date;
+
+		$db->setQuery(
+			$db->getQuery(true)
+				->update($db->quoteName('#__users'))
+				->set($db->quoteName('lastvisitDate') . '=' . $db->quote($date->format($db->getDateFormat())))
+				->where($db->quoteName('id') . '=' . (int) $id)
+		)->execute();
 	}
 }

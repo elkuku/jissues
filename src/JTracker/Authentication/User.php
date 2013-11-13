@@ -2,7 +2,7 @@
 /**
  * Part of the Joomla Tracker Authentication Package
  *
- * @copyright  Copyright (C) 2013 - 2013 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2012 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -10,11 +10,10 @@ namespace JTracker\Authentication;
 
 use Joomla\Database\DatabaseDriver;
 use Joomla\Date\Date;
-use Joomla\Factory;
 
-use JTracker\Application\TrackerApplication;
 use JTracker\Authentication\Database\TableUsers;
 use JTracker\Authentication\Exception\AuthenticationException;
+use JTracker\Container;
 
 /**
  * Abstract class containing the application user object
@@ -104,13 +103,9 @@ abstract class User implements \Serializable
 	 */
 	public function loadByUserName($userName)
 	{
-		// @todo Decouple from J\Factory
-		/* @type TrackerApplication $application */
-		$application = Factory::$application;
+		$db = Container::retrieve('db');
 
-		$database = $application->getDatabase();
-
-		$table = new TableUsers($database);
+		$table = new TableUsers($db);
 
 		$table->loadByUserName($userName);
 
@@ -118,7 +113,7 @@ abstract class User implements \Serializable
 		{
 			// Register a new user
 			$date               = new Date;
-			$this->registerDate = $date->format('Y-m-d H:i:s');
+			$this->registerDate = $date->format($db->getDateFormat());
 
 			$table->save($this);
 		}
@@ -154,11 +149,7 @@ abstract class User implements \Serializable
 	 */
 	protected function load($identifier)
 	{
-		// @todo Decouple from J\Factory
-		/* @type TrackerApplication $application */
-		$application = Factory::$application;
-
-		$db = $application->getDatabase();
+		$db = Container::retrieve('db');
 
 		// Create the user table object
 		// $table = $this->getTable();
@@ -206,11 +197,7 @@ abstract class User implements \Serializable
 	 */
 	protected function loadAccessGroups()
 	{
-		// @todo Decouple from J\Factory
-		/* @type TrackerApplication $application */
-		$application = Factory::$application;
-
-		$db = $application->getDatabase();
+		$db = Container::retrieve('db');
 
 		$this->accessGroups = $db->setQuery(
 			$db->getQuery(true)
@@ -292,7 +279,9 @@ abstract class User implements \Serializable
 		}
 
 		/* @type \App\Projects\TrackerProject $project */
-		$project = Factory::$application->getProject();
+		/* @type \JTracker\Application $app */
+		$app = Container::retrieve('app');
+		$project = $app->getProject();
 
 		if ($project->getAccessGroups($action, 'Public'))
 		{

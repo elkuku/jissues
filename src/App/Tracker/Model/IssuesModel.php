@@ -1,16 +1,19 @@
 <?php
 /**
+ * Part of the Joomla Tracker's Tracker Application
+ *
  * @copyright  Copyright (C) 2012 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 namespace App\Tracker\Model;
 
-use Joomla\Factory;
 use Joomla\Database\DatabaseQuery;
 use Joomla\Registry\Registry;
 use Joomla\String\String;
+
 use JTracker\Model\AbstractTrackerListModel;
+use JTracker\Container;
 
 /**
  * Model to get data for the issue list view
@@ -26,7 +29,7 @@ class IssuesModel extends AbstractTrackerListModel
 	 * @var    string
 	 * @since  1.0
 	 */
-	protected $context = 'com_tracker.issues';
+	protected $context = 'tracker.issues';
 
 	/**
 	 * Method to get a DatabaseQuery object for retrieving the data set from a database.
@@ -54,7 +57,7 @@ class IssuesModel extends AbstractTrackerListModel
 			$query->where($db->quoteName('a.project_id') . ' = ' . (int) $filter);
 		}
 
-		$filter = $this->state->get('list.filter');
+		$filter = $this->state->get('filter.search');
 
 		if ($filter)
 		{
@@ -65,17 +68,24 @@ class IssuesModel extends AbstractTrackerListModel
 			$query->where('(' . $db->quoteName('a.title') . ' LIKE ' . $filter . ' OR ' . $db->quoteName('a.description') . ' LIKE ' . $filter . ')');
 		}
 
-		$status = $this->state->get('filter.status');
+		$filter = $this->state->get('filter.status');
 
-		if ($status)
+		if ($filter)
 		{
-			$query->where($db->quoteName('a.status') . ' = ' . (int) $status);
+			$query->where($db->quoteName('a.status') . ' = ' . (int) $filter);
+		}
+
+		$filter = $this->state->get('filter.priority');
+
+		if ($filter)
+		{
+			$query->where($db->quoteName('a.priority') . ' = ' . (int) $filter);
 		}
 
 		// TODO: Implement filtering and join to other tables as added
 
-		$ordering  = $db->escape($this->state->get('list.ordering', 'a.id'));
-		$direction = $db->escape($this->state->get('list.direction', 'ASC'));
+		$ordering  = $db->escape($this->state->get('list.ordering', 'a.issue_number'));
+		$direction = $db->escape($this->state->get('list.direction', 'DESC'));
 		$query->order($ordering . ' ' . $direction);
 
 		return $query;
@@ -99,7 +109,7 @@ class IssuesModel extends AbstractTrackerListModel
 		// Add the list state to the store id.
 		$id .= ':' . $this->state->get('filter.priority');
 		$id .= ':' . $this->state->get('filter.status');
-		$id .= ':' . $this->state->get('list.filter');
+		$id .= ':' . $this->state->get('filter.search');
 
 		return parent::getStoreId($id);
 	}
@@ -113,34 +123,49 @@ class IssuesModel extends AbstractTrackerListModel
 	 */
 	protected function loadState()
 	{
-		/* @type \JTracker\Application\TrackerApplication $application */
-		$application = Factory::$application;
+		/* @type \JTracker\Application $application */
+		$application = Container::retrieve('app');
 
-		$project = $application->getProject();
+		$projectId = $application->getProject()->project_id;
 
 		$this->state = new Registry;
 
-		$input = $application->input;
+		$this->state->set('filter.project', $projectId);
 
-		$this->state->set('filter.project', $project->project_id);
+		$sort = $application->getUserStateFromRequest('project_' . $projectId . '.filter.sort', 'filter-sort', 0, 'uint');
 
-		$this->state->set('list.ordering', $input->get('filter_order', 'a.id'));
-
-		$listOrder = $input->get('filter_order_Dir', 'ASC');
-
-		if (!in_array(strtoupper($listOrder), array('ASC', 'DESC', '')))
+		switch ($sort)
 		{
-			$listOrder = 'ASC';
+			case 1:
+				$this->state->set('list.ordering', 'a.issue_number');
+				$this->state->set('list.direction', 'ASC');
+				break;
+
+			case 2:
+				$this->state->set('list.ordering', 'a.modified_date');
+				$this->state->set('list.direction', 'DESC');
+				break;
+
+			case 3:
+				$this->state->set('list.ordering', 'a.modified_date');
+				$this->state->set('list.direction', 'ASC');
+				break;
+
+			default:
+				$this->state->set('list.ordering', 'a.issue_number');
+				$this->state->set('list.direction', 'DESC');
 		}
 
-		$this->state->set('list.direction', $listOrder);
+		$this->state->set('filter.sort', $sort);
 
-		$this->state->set('filter.priority', $input->getUint('priority', 3));
+		$priority = $application->getUserStateFromRequest('project_' . $projectId . '.filter.priority', 'filter-priority', 0, 'uint');
+		$this->state->set('filter.priority', $priority);
 
-		$this->state->set('filter.status', $input->getUint('filter-status'));
+		$status = $application->getUserStateFromRequest('project_' . $projectId . '.filter.status', 'filter-status', 1, 'uint');
+		$this->state->set('filter.status', $status);
 
-		// Optional filter text
-		$this->state->set('list.filter', $input->getString('filter-search'));
+		$search = $application->getUserStateFromRequest('project_' . $projectId . '.filter.search', 'filter-search', '', 'string');
+		$this->state->set('filter.search', $search);
 
 		// List state information.
 		parent::loadState();

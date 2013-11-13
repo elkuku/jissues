@@ -4,27 +4,24 @@
 {% extends "index.twig" %}
 
 {% block title %}
-    {{ item.article_id
-    ? "Edit Article"
-    : "New Article"
-    }}
+    {{ item.article_id ? "Edit Article"|_ : "New Article"|_ }}
 {% endblock %}
 
 {% block headerCSS %}
     {{ parent() }}
-    <link href="{{ uri.base.path }}css/markitup/skins/markitup/style.css" rel="stylesheet" />
-    <link href="{{ uri.base.path }}css/markitup/sets/markdown/style.css" rel="stylesheet" />
+    <link href="{{ uri.base.path }}jtracker/markitup/skins/markitup/style.css" rel="stylesheet" />
+    <link href="{{ uri.base.path }}jtracker/markitup/sets/markdown/style.css" rel="stylesheet" />
 {% endblock %}
 
 {% block prependMenu %}
     <li>
         <a class="btn-success" href="javascript:;" onclick="document.editForm.submit();">
-            Save
+            {{ "Save"|_ }}
         </a>
     </li>
     <li>
         <a class="btn-inverse" href="{{ uri.base.path }}text">
-            Cancel
+            {{ "Cancel"|_ }}
         </a>
     </li>
 
@@ -34,29 +31,25 @@
 
 {% block content %}
     <h2>
-        {{ item.article_id
-        ? "Edit Article"
-        : "New Article"
-        }}
+        {{ item.article_id ? "Edit Article"|_ : "New Article"|_ }}
     </h2>
 
-    <form method="post" action="{{ uri.base.path }}text/save" class="form-inline" name="editForm">
+    <form method="post" action="{{ uri.base.path }}text/save" class="form-horizontal" name="editForm">
        <div>
         <fieldset>
-            <ul class="unstyled">
-
-                <li>
-                    <label for="title">Title</label>
+            <div class="control-group">
+                <label class="control-label" for="title">{{ "Title"|_ }}</label>
+                <div class="controls">
                     <input type="text" name="article[title]" id="title" value="{{ item.title }}" />
-                </li>
+                </div>
+            </div>
 
-                <li>
-                    <label for="alias">Alias</label>
+            <div class="control-group">
+                <label class="control-label" for="alias">{{ "Alias"|_ }}</label>
+                <div class="controls">
                     <input type="text" name="article[alias]" id="alias" value="{{ item.alias }}" />
-                </li>
-
-            </ul>
-
+                </div>
+            </div>
         </fieldset>
 
         {% set editorId="text" %}
@@ -77,8 +70,8 @@
 
     {{ parent() }}
 
-    <script type="text/javascript" src="{{ uri.base.path }}js/markitup/jquery.markitup.js"></script>
-    <script type="text/javascript" src="{{ uri.base.path }}js/markitup/sets/markdown/set.js"></script>
+    <script type="text/javascript" src="{{ uri.base.path }}vendor/markitup/markitup/jquery.markitup.js"></script>
+    <script type="text/javascript" src="{{ uri.base.path }}jtracker/markitup/sets/markdown/set.js"></script>
     <script type="text/javascript">
         $('#text').markItUp(myMarkdownSettings);
 

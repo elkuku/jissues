@@ -5,7 +5,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-use CliApp\Application\TrackerApplication;
+use CliApp\Application\CliApplication;
 
 'cli' == PHP_SAPI
 	|| die("\nThis script must be run from the command line interface.\n\n");
@@ -18,35 +18,24 @@ error_reporting(-1);
 ini_set('display_errors', 1);
 
 // Load the autoloader
-$loader = require __DIR__ . '/../vendor/autoload.php';
+$loader = include __DIR__ . '/../vendor/autoload.php';
+
+if (false == $loader)
+{
+	echo 'ERROR: Composer not properly set up! Run "composer install" or see README.md for more details' . PHP_EOL;
+
+	exit(1);
+}
 
 // Add the namespace for our application to the autoloader.
+/* @type Composer\Autoload\ClassLoader $loader */
 $loader->add('CliApp', __DIR__);
 
 define('JPATH_ROOT', realpath(__DIR__ . '/..'));
 
-/**
- * Return the given object. Useful for chaining.
- *
- * This is a legacy function to ease the transition from PHP 5.3 to 5.4
- *
- * @param   mixed  $object  The object
- *
- * @return mixed
- */
-function with($object)
-{
-	return $object;
-}
-
 try
 {
-	$application = new TrackerApplication;
-
-	// @todo remove
-	Joomla\Factory::$application = $application;
-
-	$application->execute();
+	with(new CliApplication)->execute();
 }
 catch (\Exception $e)
 {

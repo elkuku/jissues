@@ -1,6 +1,6 @@
 <?php
 /**
- * @package    JTracker\Components\Users
+ * Part of the Joomla Tracker's GitHub Application
  *
  * @copyright  Copyright (C) 2012 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -8,21 +8,48 @@
 
 namespace App\GitHub\Controller\Ajax\Hooks;
 
+use Joomla\Application\AbstractApplication;
+use Joomla\Input\Input;
+
 use JTracker\Controller\AbstractAjaxController;
+use JTracker\Container;
 
 /**
- * Default controller class for the Users component.
+ * Controller class to modify webhooks on the GitHub repository.
  *
- * @package  JTracker\Components\Users
- * @since    1.0
+ * @since  1.0
  */
 class Modify extends AbstractAjaxController
 {
 	/**
+	 * GitHub object
+	 *
+	 * @var    \Joomla\Github\Github
+	 * @since  1.0
+	 */
+	protected $github;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param   Input                $input  The input object.
+	 * @param   AbstractApplication  $app    The application object.
+	 *
+	 * @since   1.0
+	 */
+	public function __construct(Input $input = null, AbstractApplication $app = null)
+	{
+		parent::__construct($input, $app);
+
+		$this->github = Container::retrieve('gitHub');
+	}
+
+	/**
 	 * Prepare the response.
 	 *
-	 * @since  1.0
-	 * @return void
+	 * @return  void
+	 *
+	 * @since   1.0
 	 */
 	protected function prepareResponse()
 	{
@@ -39,10 +66,7 @@ class Modify extends AbstractAjaxController
 		if ('delete' == $action)
 		{
 			// Delete the hook
-			$this->getApplication()->getGitHub()
-				->repositories->hooks->delete(
-					$project->gh_user, $project->gh_project, $hookId
-				);
+			$this->github->repositories->hooks->delete($project->gh_user, $project->gh_project, $hookId);
 		}
 		else
 		{
@@ -51,10 +75,7 @@ class Modify extends AbstractAjaxController
 		}
 
 		// Get the current hooks list.
-		$this->response->data = $this->getApplication()->getGitHub()
-			->repositories->hooks->getList(
-				$project->gh_user, $project->gh_project
-			);
+		$this->response->data = $this->github->repositories->hooks->getList($project->gh_user, $project->gh_project);
 	}
 
 	/**
@@ -63,8 +84,10 @@ class Modify extends AbstractAjaxController
 	 * @param   string  $action  The action to perform.
 	 * @param   object  $hook    The hook object.
 	 *
-	 * @throws \RuntimeException
 	 * @return  $this
+	 *
+	 * @since   1.0
+	 * @throws  \RuntimeException
 	 */
 	private function processAction($action, $hook)
 	{
@@ -86,18 +109,17 @@ class Modify extends AbstractAjaxController
 		}
 
 		// Create the hook.
-		$this->getApplication()->getGitHub()
-			->repositories->hooks->edit(
-				$project->gh_user,
-				$project->gh_project,
-				$hook->id,
-				$hook->name,
-				$hook->config,
-				$hook->events,
-				array(),
-				array(),
-				$hook->active
-			);
+		$this->github->repositories->hooks->edit(
+			$project->gh_user,
+			$project->gh_project,
+			$hook->id,
+			$hook->name,
+			$hook->config,
+			$hook->events,
+			array(),
+			array(),
+			$hook->active
+		);
 
 		return $this;
 	}
@@ -107,18 +129,16 @@ class Modify extends AbstractAjaxController
 	 *
 	 * @param   integer  $hookId  The hook id.
 	 *
-	 * @throws \RuntimeException
-	 * @since  1.0
-	 * @return object
+	 * @return  object
+	 *
+	 * @since   1.0
+	 * @throws  \RuntimeException
 	 */
 	private function getHook($hookId)
 	{
 		$project = $this->getApplication()->getProject();
 
-		$hooks = $this->getApplication()->getGitHub()
-			->repositories->hooks->getList(
-				$project->gh_user, $project->gh_project
-			);
+		$hooks = $this->github->repositories->hooks->getList($project->gh_user, $project->gh_project);
 
 		if (!$hooks)
 		{

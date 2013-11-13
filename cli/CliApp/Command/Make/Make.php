@@ -6,12 +6,8 @@
 
 namespace CliApp\Command\Make;
 
-use CliApp\Application\TrackerApplication;
-
 use CliApp\Command\TrackerCommand;
 use CliApp\Command\TrackerCommandOption;
-
-use g11n\Support\ExtensionHelper;
 
 /**
  * Class for retrieving issues from GitHub for selected projects
@@ -39,13 +35,11 @@ class Make extends TrackerCommand
 	/**
 	 * Constructor.
 	 *
-	 * @param   TrackerApplication  $application  The application object.
-	 *
 	 * @since   1.0
 	 */
-	public function __construct(TrackerApplication $application)
+	public function __construct()
 	{
-		parent::__construct($application);
+		parent::__construct();
 
 		$this->description = 'The make engine.';
 
@@ -71,6 +65,9 @@ class Make extends TrackerCommand
 		$this->out('<error>                                    </error>');
 		$this->out('<error>  Please use one of the following:  </error>');
 		$this->out('<error>  make docu                         </error>');
+		$this->out('<error>  make autocomplete                 </error>');
+		$this->out('<error>  make dbcomments                   </error>');
+		$this->out('<error>  make depfile                      </error>');
 		$this->out('<error>  make langfiles                    </error>');
 		$this->out('<error>  make langtemplates                </error>');
 		$this->out('<error>                                    </error>');
