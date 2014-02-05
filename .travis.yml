@@ -17,3 +17,4 @@ before_script:
 script:
   - ant travis-build
   - phpunit --configuration phpunit.travis.xml
+  - cli/tracker.php test run
