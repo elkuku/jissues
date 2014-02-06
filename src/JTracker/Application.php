@@ -125,6 +125,8 @@ final class Application extends AbstractWebApplication implements DispatcherAwar
 	 */
 	public function getDebugger()
 	{
+		$TEST = '123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678';
+
 		return $this->container->get('debugger');
 	}
 
