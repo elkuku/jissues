@@ -62,7 +62,7 @@ class GitHubUserTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertThat(
 			$this->object->username,
-			$this->equalTo('elkuku')
+			$this->equalTo('foobar')
 		);
 
 		$this->assertThat(
