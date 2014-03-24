@@ -48,12 +48,12 @@ class ConfigurationProvider implements ServiceProviderInterface
 		// Verify the configuration exists and is readable.
 		if (!is_readable($file))
 		{
-echo  $file;
 			throw new \RuntimeException('Configuration file does not exist or is unreadable.');
 		}
 
 		// Load the configuration file into an object.
-		$configObject = json_decode(file_get_contents($file));
+		$configString = $this->replaceEnvVars(file_get_contents($file));
+		$configObject = json_decode($configString);
 
 		if ($configObject === null)
 		{
@@ -84,5 +84,27 @@ echo  $file;
 				return $this->config;
 			}, true, true
 		);
+	}
+
+	/**
+	 * Replace any env vars referenced in a string with their values.
+	 *
+	 * @param   string  $string  The string to replace.
+	 *
+	 * @return  string
+	 *
+	 * @since  1.0
+	 */
+	private function replaceEnvVars($string)
+	{
+		foreach (array_keys($_ENV) as $var)
+		{
+			if (strstr($string, '$' . $var))
+			{
+				$string = str_replace('$' . $var, $_ENV[$var], $string);
+			}
+		}
+
+		return $string;
 	}
 }
