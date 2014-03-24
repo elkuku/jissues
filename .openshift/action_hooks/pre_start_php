@@ -1,1 +1,1 @@
-export JTRACKER_ENVIRONMENT="openshift"
+export JTRACKER_ENVIRONMENT="xopenshift"
