@@ -48,6 +48,7 @@ class ConfigurationProvider implements ServiceProviderInterface
 		// Verify the configuration exists and is readable.
 		if (!is_readable($file))
 		{
+echo  $file;
 			throw new \RuntimeException('Configuration file does not exist or is unreadable.');
 		}
 
