@@ -1,1 +1,2 @@
 export yyyaaJTRACKER_ENVIRONMENT="openshift"
+export FOOO=BarBaz
