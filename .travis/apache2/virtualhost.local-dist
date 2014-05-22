@@ -2,7 +2,7 @@
     ServerName %hostname%
     ServerAdmin admin@example.com
 
-    DocumentRoot %basedir%
+    DocumentRoot %basedir%/www
 
     <Directory %basedir%/www>
         DirectoryIndex app.php
