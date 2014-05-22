@@ -1,6 +1,6 @@
 default:
   extensions:
     Behat\MinkExtension\ServiceContainer\MinkExtension:
-      base_url:  'http://jtracker.local'
+      base_url:  'http://jtracker.local/index.php'
       goutte: ~
       selenium2: ~
