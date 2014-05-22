@@ -5,7 +5,7 @@
     DocumentRoot %basedir%/www
 
     <Directory %basedir%/www>
-        DirectoryIndex app.php
+        DirectoryIndex index.php
         Options Indexes FollowSymLinks SymLinksifOwnerMatch
         AllowOverride All
         Allow from All
