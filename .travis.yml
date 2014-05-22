@@ -17,4 +17,4 @@ before_script:
 
 script:
   - bin/jtracker test run
-  - vendor/bin/behat
+  - vendor/bin/behat -v --config behat-travis.yml
