@@ -60,6 +60,38 @@ JTracker.submitComment = function (issue_number, debugContainer, outContainer, t
 	);
 };
 
+JTracker.deleteComment = function(id) {
+    //alert(id);
+    $.get(
+        '/delete/comment/' + id,
+        function (response) {
+
+            var html = '';
+
+            if (response.error) {
+                html = 'error: ' + response.error;
+            }
+            else if (!response.data.options.length) {
+                html = '<p>' + 'No users found.' + '</p>';
+            }
+            else {
+                html = '<ul>';
+
+                $.each(response.data.options, function (k, user) {
+                    html += '<li><a href="{{ uri.base.path }}user/' + user.id + '">'
+                    + user.username + '</a></li>';
+                });
+
+                html += '</ul>';
+            }
+
+            alert(html);
+
+            jQuery('#ajaxListUsers').html(html);
+        }
+    );
+};
+
 JTracker.submitVote = function (issueId, debugContainer) {
 	var status = $(debugContainer);
 	var importance = $('input[name=importanceRadios]').filter(':checked').val();

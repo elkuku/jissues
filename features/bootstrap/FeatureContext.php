@@ -40,9 +40,11 @@ class FeatureContext extends MinkContext
 	 */
 	public function iDumpTheContents()
 	{
-		echo 'DUMP';
+		echo 'DUMP start';
 
 		print_r($this->getSession()->getPage()->getContent());
+
+		echo 'DUMP end';
 
 		// print_r($this->getSession()->getDriver()->getContent());
 
