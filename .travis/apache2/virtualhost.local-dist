@@ -4,8 +4,8 @@
 
     DocumentRoot %basedir%/www
 
-    <Directory %basedir%/www>
-        Options Indexes FollowSymLinks SymLinksifOwnerMatch
+    <Directory %basedir%/www/>
+        Options Indexes FollowSymLinks
         AllowOverride All
         Allow from All
     </Directory>
