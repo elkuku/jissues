@@ -16,14 +16,15 @@ echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php
 ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
 
 # configure apache virtual hosts
-   - sudo cp -f build/travis-ci-apache /etc/apache2/sites-available/default
-   - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/default
-   - sudo service apache2 restart
+#sudo cp -f build/travis-ci-apache /etc/apache2/sites-available/default
+#sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/default
+#sudo service apache2 restart
 
 
-sudo a2enmod rewrite
+#sudo a2enmod rewrite
 sudo a2ensite $VHOSTNAME
 
 echo "---> Restarting $(tput bold ; tput setaf 2)apache2$(tput sgr0)"
 
-sudo /etc/init.d/apache2 restart
+#sudo /etc/init.d/apache2 restart
+sudo service apache2 restart
