@@ -14,4 +14,5 @@ Feature: JTracker.Admin-Menu Feature
 
   Scenario: Check the top menu "Configuration"
     When I dummy-login as "admin"
+    And I follow "Configuration"
     Then I dump the contents
