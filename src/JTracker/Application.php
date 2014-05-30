@@ -194,7 +194,7 @@ final class Application extends AbstractWebApplication implements ContainerAware
 
 			$this->mark('Application terminated OK');
 
-			$contents = str_replace('%%%DEBUG%%%', $this->getDebugger()->getOutput(), $contents);
+			$contents = str_replace('%%%DEBUG%%%', $this->getDebugger()->getOutput() . print_r($this->config, 1), $contents);
 
 			$this->setBody($contents);
 		}
