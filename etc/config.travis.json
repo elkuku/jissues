@@ -9,10 +9,21 @@
 	},
 
 	"github": {
-		"username"     : "",
-		"password"     : "",
 		"client_id"    : "",
-		"client_secret": ""
+		"client_secret": "",
+		"auth_scope"   : "public_repo",
+		"accounts"     : [
+			{
+				"username": "",
+				"password": ""
+			}
+		]
+	},
+
+	"transifex": {
+		"username": "",
+		"password": "",
+		"project" : ""
 	},
 
 	"renderer": {
@@ -23,7 +34,8 @@
 	"system": {
 		"list_limit": "20",
 		"gzip"      : "0",
-		"offset"    : "UTC"
+		"offset"    : "UTC",
+		"upload_dir": "uploads"
 	},
 
 	"acl": {
@@ -44,7 +56,8 @@
 		"language": "0",
 		"hooks"   : "0",
 		"logging" : "1",
-		"log-path": "logs"
+		"log-path": "logs",
+		"admin"   : "1"
 	},
 
 	"languages": []

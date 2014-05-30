@@ -37,3 +37,6 @@ cat /etc/apache2/sites-available/$VHOSTNAME.conf
 
 echo "---> $(tput bold ; tput setaf 2)Adding host to /etc/hosts$(tput sgr0) :"
 echo "127.0.0.1    $VHOSTNAME" | sudo tee -a /etc/hosts
+
+# Quirky...
+touch $DOCROOT/error.log && chmod 0777 $DOCROOT/error.log
