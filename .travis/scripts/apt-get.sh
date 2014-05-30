@@ -12,7 +12,7 @@ echo "---> Packets to install : $(tput bold ; tput setaf 3)$EXTRA_PACKETS$(tput 
 
 sudo apt-get update
 sudo apt-get install python-software-properties
-sudo add-apt-repository ppa:ondrej/php5-oldstable
+sudo add-apt-repository ppa:ondrej/php5
 sudo apt-get update
 sudo apt-get install php5
 sudo apt-get install -y --force-yes $EXTRA_PACKETS
