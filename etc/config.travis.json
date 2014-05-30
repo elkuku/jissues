@@ -60,5 +60,7 @@
 		"admin"   : "1"
 	},
 
-	"languages": []
+	"languages": [
+		"en-GB", "de-DE", "ru-RU", "nl-NL", "pt-PT", "fr-FR"
+	],
 }
