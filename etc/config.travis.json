@@ -40,7 +40,7 @@
 
 	"acl": {
 		"admin_users": [
-			"", ""
+			"dummy-admin", ""
 		],
 		"secret"     : "not-used-yet"
 	},
