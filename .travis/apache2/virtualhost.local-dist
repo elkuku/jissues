@@ -7,8 +7,7 @@
     <Directory %basedir%/www/>
         Options Indexes FollowSymLinks MultiViews ExecCGI
         AllowOverride All
-        Order deny,allow
-        Allow from All
+		Require all granted
     </Directory>
 
     # Wire up Apache to use Travis CI's php-fpm.
