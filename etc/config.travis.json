@@ -63,4 +63,11 @@
 	"languages": [
 		"en-GB", "de-DE", "ru-RU", "nl-NL", "pt-PT", "fr-FR"
 	],
+
+	"validation": {
+		"mime_types": [
+			"image/png", "image/jpeg", "image/gif"
+		],
+		"file_size" : "1M"
+	}
 }
