@@ -29,9 +29,11 @@ echo "---> Document root : $(tput bold ; tput setaf 3)$DOCROOT$(tput sgr0)"
 echo "---> Configuration file : $(tput bold ; tput setaf 3)$CONFIGFILE$(tput sgr0)"
 
 sed s?%basedir%?$DOCROOT? "$CONFIGFILE" | sed s/%hostname%/$VHOSTNAME/ > $VHOSTNAME
-sudo mv $VHOSTNAME /etc/apache2/sites-available/$VHOSTNAME
 
-cat /etc/apache2/sites-available/$VHOSTNAME
+sudo mv /etc/apache2/sites-available/default /etc/apache2/sites-available/default.old
+sudo mv $VHOSTNAME /etc/apache2/sites-available/default
+
+cat /etc/apache2/sites-available/default
 
 echo "---> $(tput bold ; tput setaf 2)Adding host to /etc/hosts$(tput sgr0) :"
 echo "127.0.0.1    $VHOSTNAME" | sudo tee -a /etc/hosts
