@@ -33,8 +33,8 @@ sed s?%basedir%?$DOCROOT? "$CONFIGFILE" | sed s/%hostname%/$VHOSTNAME/ > $VHOSTN
 cd /etc/apache2/sites-available
 ls -la
 
-sudo mv /etc/apache2/sites-available/000-default /etc/apache2/sites-available/000-default.old
-sudo mv $VHOSTNAME /etc/apache2/sites-available/000-default
+sudo mv /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.old
+sudo mv $VHOSTNAME /etc/apache2/sites-available/000-default.conf
 
 cat /etc/apache2/sites-available/default
 
