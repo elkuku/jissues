@@ -40,4 +40,4 @@ echo "127.0.0.1    $VHOSTNAME" | sudo tee -a /etc/hosts
 
 # Quirky...
 touch $DOCROOT/error.log && chmod 0777 $DOCROOT/error.log
-touch $DOCROOT/error.log && chmod 0777 $DOCROOT/database.log
+touch $DOCROOT/database.log && chmod 0777 $DOCROOT/database.log
