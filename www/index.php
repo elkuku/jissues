@@ -32,8 +32,8 @@ include $path;
 // Execute the application.
 try
 {
-	(new JTracker\Application)
-		->execute();
+	$application = new JTracker\Application;
+	$application->execute();
 }
 catch (\Exception $e)
 {
