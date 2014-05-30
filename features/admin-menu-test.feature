@@ -7,6 +7,6 @@ Feature: JTracker.Admin-Menu Feature
     When I dummy-login as "admin"
     Then I should see "Hello Mr. Dummy \"admin\""
 
-  Scenario: Dummy login as Admin
+  Scenario: Dummy login as Admin DUMP
     When I dummy-login as "admin"
     Then I dump the contents
