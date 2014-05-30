@@ -1,6 +1,6 @@
 #!/bin/sh
 
-EXTRA_PACKETS="apache2.2-common apache2-bin apache2-data apache2 libapache2-mod-fastcgi php5 php5-mysql"
+EXTRA_PACKETS="apache2.2-common apache2-bin apache2-data libapache2-mod-fastcgi php5 php5-mysql"
 
 if [ "$1" ]
 then
