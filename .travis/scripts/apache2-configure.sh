@@ -21,8 +21,8 @@ echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php
 #sudo service apache2 restart
 
 
-#echo "--> Enabling virtual host $(tput setaf 2)$VHOSTNAME$(tput sgr0)"
-#sudo a2ensite $VHOSTNAME
+echo "--> Enabling virtual host $(tput setaf 2)$VHOSTNAME$(tput sgr0)"
+sudo a2ensite $VHOSTNAME
 
 echo "---> Restarting $(tput bold ; tput setaf 2)apache2$(tput sgr0)"
 

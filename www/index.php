@@ -5,8 +5,7 @@
  * @copyright  Copyright (C) 2012 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license    http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License Version 2 or Later
  */
-echo 'This server runs PHP ' . PHP_VERSION;
-die();
+
 // Set error reporting for development
 error_reporting(-1);
 ini_set('display_errors', 1);
@@ -33,8 +32,8 @@ include $path;
 // Execute the application.
 try
 {
-	$application = new JTracker\Application;
-	$application->execute();
+	(new JTracker\Application)
+		->execute();
 }
 catch (\Exception $e)
 {
