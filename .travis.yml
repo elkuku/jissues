@@ -19,4 +19,4 @@ before_script:
 script:
   - bin/jtracker install --reinstall
   - bin/jtracker test run
-  - vendor/bin/behat -v --config behat-travis.yml
+  - vendor/bin/behat -v --config behat-travis.yml features/dump.feature
