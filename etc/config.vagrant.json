@@ -59,9 +59,7 @@
 		"log-path": "/vagrant/logs"
 	},
 
-	"languages": [
-		"en-GB", "de-DE", "ru-RU", "nl-NL", "pt-PT", "fr-FR"
-	],
+	"languages": [],
 
 	"validation": {
 		"mime_types": [
