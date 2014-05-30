@@ -30,6 +30,9 @@ echo "---> Configuration file : $(tput bold ; tput setaf 3)$CONFIGFILE$(tput sgr
 
 sed s?%basedir%?$DOCROOT? "$CONFIGFILE" | sed s/%hostname%/$VHOSTNAME/ > $VHOSTNAME
 
+cd /etc/apache2/sites-available
+ls -la
+
 sudo mv /etc/apache2/sites-available/000-default /etc/apache2/sites-available/000-default.old
 sudo mv $VHOSTNAME /etc/apache2/sites-available/000-default
 
