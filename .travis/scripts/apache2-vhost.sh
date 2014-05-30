@@ -36,6 +36,9 @@ ls -la
 sudo mv /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.old
 sudo mv $VHOSTNAME /etc/apache2/sites-available/000-default.conf
 
+cd /etc/apache2/sites-enabled
+ls -la
+
 cat /etc/apache2/sites-available/default
 
 echo "---> $(tput bold ; tput setaf 2)Adding host to /etc/hosts$(tput sgr0) :"
