@@ -9,6 +9,7 @@ Feature: JTracker.Admin-Menu Feature
 
   Scenario: Check the top menu "Configuration"
     When I dummy-login as "admin"
+    And I follow "System"
     And I follow "Configuration"
     Then I should see "Edit Configuration"
 
