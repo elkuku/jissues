@@ -20,3 +20,7 @@ script:
   - bin/jtracker install --reinstall
   - bin/jtracker test run
   - vendor/bin/behat -v --config behat-travis.yml
+
+# configure notifications (email, IRC, campfire etc)
+notifications:
+  irc: "irc.freenode.org#yourfavouriteroomfortravis"
