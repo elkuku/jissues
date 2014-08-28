@@ -45,9 +45,5 @@ class FeatureContext extends MinkContext
 		print_r($this->getSession()->getPage()->getContent());
 
 		echo  PHP_EOL . 'DUMP END';
-
-		// print_r($this->getSession()->getDriver()->getContent());
-
-		// print_r($this->getSession()->getDriver()->getText('//html'));
 	}
 }

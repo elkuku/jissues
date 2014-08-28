@@ -15,7 +15,7 @@ Issue Tracking application built on the Joomla! Framework integrating with GitHu
 
 Joomla Application Package
 
-* Installed: 1.2.0
+* Installed: 1.2.1
 * Source URL: https://github.com/joomla-framework/application.git
 
 #### joomla/controller (~1.1@stable)
@@ -78,7 +78,7 @@ Joomla HTTP Package
 
 Joomla Input Package
 
-* Installed: 1.1.1
+* Installed: 1.1.3
 * Source URL: https://github.com/joomla-framework/input.git
 
 #### joomla/model (~1.1@stable)
@@ -99,7 +99,7 @@ Joomla Profiler Package
 
 Joomla Registry Package
 
-* Installed: 1.1.2
+* Installed: 1.1.3
 * Source URL: https://github.com/joomla-framework/registry.git
 
 #### joomla/router (~1.1@stable)
@@ -141,21 +141,21 @@ Joomla View Package
 
 Symfony HttpFoundation Component
 
-* Installed: v2.4.4
+* Installed: v2.4.8
 * Source URL: https://github.com/symfony/HttpFoundation.git
 
 #### twig/twig (1.*@stable)
 
 Twig, the flexible, fast, and secure template language for PHP
 
-* Installed: v1.15.1
+* Installed: v1.16.0
 * Source URL: https://github.com/fabpot/Twig.git
 
-#### elkuku/g11n (2.1)
+#### elkuku/g11n (2.*@stable)
 
 The g11n language library
 
-* Installed: 2.1
+* Installed: 2.2
 * Source URL: https://github.com/elkuku/g11n.git
 
 #### elkuku/console-progressbar (1.0)
@@ -165,11 +165,11 @@ This class provides you with an easy-to-use interface to progress bars.
 * Installed: 1.0
 * Source URL: https://github.com/elkuku/ConsoleProgressBar.git
 
-#### babdev/library (dev-master)
+#### babdev/library (1.*)
 
 BabDev's PHP libraries
 
-* Installed: dev-master feb8a16f1f2d434c3c4655df28efc7a9c252ceb4
+* Installed: dev-master 4577272d0f414b09c6238a29e78738392e5439ea
 * Source URL: https://github.com/BabDev/BabDev-Library.git
 
 #### codeguy/upload (1.3.2)
@@ -183,8 +183,15 @@ Handle file uploads with extensible validation and storage strategies
 
 Filesystem abstraction, but easy.
 
-* Installed: 0.4.4
+* Installed: 0.4.5
 * Source URL: https://github.com/thephpleague/flysystem.git
+
+#### adaptive/php-text-difference (1.*@stable)
+
+A comprehensive library for generating differences between two hashable objects (strings or arrays). Fork of a fork to add namespaces and psr-4 autoloading
+
+* Installed: v1.0.3
+* Source URL: https://github.com/adaptivemedia/php-text-difference.git
 
 ### PHP - Development
 
@@ -192,7 +199,7 @@ Filesystem abstraction, but easy.
 
 Sends your logs to files, sockets, inboxes, databases and various web services
 
-* Installed: 1.9.1
+* Installed: 1.10.0
 * Source URL: https://github.com/Seldaek/monolog.git
 
 #### raveren/kint (0.9)
@@ -206,7 +213,7 @@ Kint - debugging helper for PHP developers
 
 php error handling for cool kids
 
-* Installed: 1.1
+* Installed: 1.1.2
 * Source URL: https://github.com/filp/whoops.git
 
 #### mustache/mustache (2.1.*@stable)
@@ -220,14 +227,14 @@ A Mustache implementation in PHP.
 
 The PHP Unit Testing framework.
 
-* Installed: 4.1.0
+* Installed: 4.2.2
 * Source URL: https://github.com/sebastianbergmann/phpunit.git
 
 #### squizlabs/php_codesniffer (1.*@stable)
 
 PHP_CodeSniffer tokenises PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.
 
-* Installed: 1.5.3
+* Installed: 1.5.4
 * Source URL: https://github.com/squizlabs/PHP_CodeSniffer.git
 
 #### sebastian/phpcpd (*)
@@ -241,14 +248,14 @@ Copy/Paste Detector (CPD) for PHP code.
 
 A tool for quickly measuring the size of a PHP project.
 
-* Installed: dev-master a9cbcc12bc5e80c3e4d29aa48454cf7debd23087
+* Installed: dev-master ca70e70ae96cb268b8200af2716af366cf3dc1d1
 * Source URL: https://github.com/sebastianbergmann/phploc.git
 
 #### clue/graph-composer (*)
 
 Dependency graph visualization for composer.json
 
-* Installed: dev-master 8d759e711a3bdf3f877b56b206bc627df658d2b4
+* Installed: dev-master 151ef3a4ba91653bee2973e5dc4331d6e4e58cdb
 * Source URL: https://github.com/clue/graph-composer.git
 
 ### JavaScript
@@ -307,6 +314,24 @@ g11n is a custom language handler - made primarily for Joomla!
 
 * Source URL: https://github.com/elkuku/g11n-js
 
+#### twbs-pagination (1.1.2)
+
+jQuery simple pagination plugin for bootstrap-style webpages
+
+* Source URL: https://github.com/esimakin/twbs-pagination
+
+#### bootstrap-select (1.5.4)
+
+
+
+* Source URL: https://github.com/silviomoreto/bootstrap-select
+
+#### d3 (3.4.6)
+
+
+
+* Source URL: https://github.com/mbostock/d3
+
 
 ## Credits
 
@@ -350,7 +375,7 @@ GitHub acts as our authentication provider, software repository, markdown parser
 
 #### Transifex
 
-The Issue Tracker utilizes Transifex to manage translations of the user interface.
+The Issue Tracker utilizes Transifex to manage translations of the user interface. If you would like to help translating, please head over to the [project page on Transifex](https://opentranslators.transifex.com/projects/p/jtracker/translate).
 
 * https://www.transifex.com/
 
@@ -366,6 +391,13 @@ The Issue Tracker utilizes Transifex to manage translations of the user interfac
 #### de-DE
 * Nikolai Plath &lt;der.el.kuku@gmail.com&gt;, 2013, 2014
 
+#### es-ES
+* Marcos Peebles &lt;marcos.peebles@gmail.com&gt;, 2014
+* Nikolai Plath &lt;der.el.kuku@gmail.com&gt;, 2014
+
+#### et-EE
+* Rivo Zängov &lt;eraser@eraser.ee&gt;, 2014
+
 #### fr-FR
 * Marc Antoine THEVENET &lt;mat@idimweb.com&gt;, 2014
 
@@ -373,7 +405,7 @@ The Issue Tracker utilizes Transifex to manage translations of the user interfac
 * József Tamás Herczeg &lt;jtherczeg@gmail.com&gt;, 2014
 
 #### it-IT
-* Simone Baldelli &lt;baldelli.simone@gmail.com&gt;, 2014
+* Kravenor &lt;baldelli.simone@gmail.com&gt;, 2014
 
 #### nl-NL
 * Herman Peeren &lt;herman@yepr.nl&gt;, 2014
@@ -384,7 +416,10 @@ The Issue Tracker utilizes Transifex to manage translations of the user interfac
 * Marcos Correa &lt;mcorrea.jr28@gmail.com&gt;, 2014
 
 #### pt-PT
-* Paulo Izidoro &lt;pauloizidoro@gmail.com&gt;, 2014
+* Paulo Pereira &lt;pauloizidoro@gmail.com&gt;, 2014
 
 #### ru-RU
-* Dmitrijs Rekuns, 2014
+* Dmitry Rekun, 2014
+
+#### zh-CN
+* Zehan Zhao &lt;cnallenzhao@gmail.com&gt;, 2014

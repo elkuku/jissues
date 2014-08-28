@@ -120,3 +120,37 @@ JTracker.submitVote = function (issueId, debugContainer) {
 		}
 	);
 };
+
+JTracker.submitTest = function (issueId, button) {
+	var status = $(button);
+	var result = $('input[name=tested]').filter(':checked').val();
+
+	status.addClass('disabled').removeAttr('href').removeAttr('onclick').html(g11n3t('Submitting test result...'));
+
+	$.post(
+		'/submit/testresult',
+		{ issueId: issueId, result: result },
+		function (r) {
+			if (r.error) {
+				// Failure
+				status.addClass('btn-danger').removeClass('btn-success').html(r.error);
+			}
+			else {
+				// Success
+				status.html(r.message);
+
+				var data = $.parseJSON(r.data);
+
+				JTracker.updateTests(data.testsSuccess, data.testsFailure)
+			}
+		}
+	);
+};
+
+JTracker.updateTests = function (testsSuccess, testsFailure) {
+	$('#usertests-success-num').text(testsSuccess.length);
+	$('#usertests-success').text(testsSuccess.join(', '));
+
+	$('#usertests-fail-num').text(testsFailure.length);
+	$('#usertests-fail').text(testsFailure.join(', '));
+};

@@ -34,6 +34,7 @@
 	"system": {
 		"list_limit": "20",
 		"gzip"      : "0",
+		"use_cdn"   : "0",
 		"offset"    : "UTC",
 		"upload_dir": "uploads"
 	},

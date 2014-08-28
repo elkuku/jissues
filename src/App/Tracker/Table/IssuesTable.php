@@ -45,6 +45,8 @@ use JTracker\Database\AbstractDatabaseTable;
  * @property   integer  $build            Build the issue is reported on
  * @property   integer  $tests            Number of successful tests
  * @property   integer  $easy             Flag if item is an easy test
+ * @property   string   $merge_state      The merge state
+ * @property   string   $gh_merge_status  The GitHub merge status (JSON encoded)
  *
  * @since  1.0
  */
@@ -65,14 +67,6 @@ class IssuesTable extends AbstractDatabaseTable
 	 * @since  1.0
 	 */
 	protected $oldObject = null;
-
-	/**
-	 * User object
-	 *
-	 * @var    GitHubUser
-	 * @since  1.0
-	 */
-	protected $user = null;
 
 	/**
 	 * Constructor
@@ -210,14 +204,9 @@ class IssuesTable extends AbstractDatabaseTable
 		if (!$isNew)
 		{
 			// Existing item
-			if (!$this->modified_date)
+			if ($this->modified_date == '0000-00-00 00:00:00')
 			{
 				$this->modified_date = $date;
-			}
-
-			if (!$this->modified_by)
-			{
-				$this->modified_by = $this->getUser()->username;
 			}
 		}
 		else
@@ -299,9 +288,9 @@ class IssuesTable extends AbstractDatabaseTable
 						// Expected change ;)
 						break;
 
-					case 'description_raw' :
-						// @todo do something ?
-						$changes[] = $change;
+					case 'description' :
+
+						// Do nothing
 
 						break;
 
@@ -394,39 +383,5 @@ class IssuesTable extends AbstractDatabaseTable
 		}
 
 		return $fields;
-	}
-
-	/**
-	 * Get the user.
-	 *
-	 * @return  GitHubUser
-	 *
-	 * @since   1.0
-	 * @throws  \RuntimeException
-	 */
-	public function getUser()
-	{
-		if (is_null($this->user))
-		{
-			throw new \RuntimeException('User not set');
-		}
-
-		return $this->user;
-	}
-
-	/**
-	 * Set the user.
-	 *
-	 * @param   GitHubUser  $user  The user.
-	 *
-	 * @return  $this  Method allows chaining
-	 *
-	 * @since   1.0
-	 */
-	public function setUser(GitHubUser $user)
-	{
-		$this->user = $user;
-
-		return $this;
 	}
 }
